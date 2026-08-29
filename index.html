@@ -2895,7 +2895,7 @@ var C3D = (function(){
   function buildLabels(){
     var wrap = $('#c3dLabels');
     if (!wrap) return;
-    wrap.innerHTML = ''; labelEls = [];
+    wrap.innerHTML = ''; labelEls = []; labelOrder = null;
     D.regions.forEach(function(r){
       if (r._x == null) return;
       var minor = r.v < 40;
@@ -2985,19 +2985,32 @@ var C3D = (function(){
     $('#c3dNational').textContent = bigNum(s * NATIONAL_PER_SEC, ['t','kt','Mt'], 1000);
   }
 
-  var v3 = null, movedOnce = false;
+  var v3 = null, movedOnce = false, labelOrder = null;
   function positionLabels(){
     v3 = v3 || new THREE.Vector3();
     var b = renderer.domElement;
-    labelEls.forEach(function(o){
+    /* largest emitters win a contested spot; the reticle stat outranks all */
+    labelOrder = labelOrder || labelEls.slice().sort(function(a, c){
+      return (c.ret ? 1e9 : c.r.v) - (a.ret ? 1e9 : a.r.v);
+    });
+    var placed = [];
+    labelOrder.forEach(function(o){
       if (o.ret) v3.set(reticle.x, 0.5, reticle.z + reticle.r);
       else v3.set(o.r._x, o.r._h + 6, o.r._z);
       v3.project(camera);
-      var vis = v3.z < 1;
-      o.el.style.opacity = vis ? '1' : '0';
-      if (!vis) return;
-      o.el.style.left = ((v3.x * .5 + .5) * b.clientWidth) + 'px';
-      o.el.style.top = ((-v3.y * .5 + .5) * b.clientHeight) + 'px';
+      if (v3.z >= 1){ o.el.style.opacity = '0'; return; }
+      var x = (v3.x * .5 + .5) * b.clientWidth;
+      var y = (-v3.y * .5 + .5) * b.clientHeight;
+      if (o.w == null) o.w = o.el.offsetWidth || 64;
+      var box = { l:x - o.w / 2 - 5, r:x + o.w / 2 + 5, t:y - 9, b:y + 9 };
+      var clash = placed.some(function(p){
+        return !(box.r < p.l || box.l > p.r || box.b < p.t || box.t > p.b);
+      });
+      o.el.style.opacity = clash ? '0' : '1';
+      if (clash) return;
+      placed.push(box);
+      o.el.style.left = x + 'px';
+      o.el.style.top = y + 'px';
     });
   }
 
