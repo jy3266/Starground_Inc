@@ -513,6 +513,96 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 .foot-b{margin-top:34px; padding-top:18px; border-top:1px solid var(--line-soft); display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; font-family:var(--mono); font-size:10.5px; color:var(--ink-4)}
 @media (max-width:760px){ .foot-grid{grid-template-columns:1fr} .book{grid-template-columns:1fr} }
 
+/* ============================================================
+   3D carbon-movement stage
+   ============================================================ */
+.pane3d{background:#070B0D}
+.stage3d{
+  position:relative; width:100%;
+  height:clamp(400px, 58vh, 660px);
+  background:
+    radial-gradient(120% 90% at 50% 118%, rgba(232,145,60,.10), transparent 58%),
+    radial-gradient(90% 70% at 50% -10%, rgba(79,209,182,.07), transparent 60%),
+    #070B0D;
+  overflow:hidden; cursor:grab; touch-action:none; user-select:none;
+}
+.stage3d.dragging{cursor:grabbing}
+.stage3d-canvas{position:absolute; inset:0}
+.stage3d-canvas canvas{display:block; width:100%; height:100%}
+.stage3d-fallback{position:absolute; inset:0; padding:20px; overflow:auto}
+
+/* vignette + scanline: the readout of an instrument, not a window */
+.stage3d::after{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.014) 0 1px, transparent 1px 3px),
+    radial-gradient(85% 70% at 50% 50%, transparent 42%, rgba(7,11,13,.72) 100%);
+}
+.stage3d-note{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:4;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--ink-3);
+  background:rgba(7,11,13,.8); border:1px solid var(--line-soft); border-radius:var(--r);
+  padding:9px 15px; pointer-events:none;
+}
+.stage3d-note[hidden]{display:none}
+
+.labels3d{position:absolute; inset:0; pointer-events:none; z-index:2}
+.lbl3{
+  position:absolute; transform:translate(-50%,-50%);
+  font-family:var(--mono); font-size:10px; letter-spacing:.04em; white-space:nowrap;
+  color:var(--ink-2); text-shadow:0 1px 5px rgba(7,11,13,.95), 0 0 12px rgba(7,11,13,.8);
+  transition:opacity .2s var(--ease);
+}
+.lbl3 b{color:var(--ember); font-weight:600; margin-left:5px}
+.lbl3.minor{color:var(--ink-4); font-size:9px}
+.lbl3.minor b{color:var(--ember-dim)}
+
+.hud{position:absolute; z-index:4; pointer-events:none; max-width:min(60%, 330px)}
+.hud-tl{top:14px; left:16px}
+.hud-bl{left:16px; bottom:14px}
+.hud-k{
+  font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-4); margin-bottom:3px;
+}
+.hud-v{
+  font-family:var(--mono); font-size:clamp(24px,3.2vw,34px); font-weight:600;
+  letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1;
+  color:var(--ink); margin-bottom:13px;
+}
+.hud-rows{display:flex; flex-direction:column; gap:7px}
+.hud-r{display:flex; flex-direction:column; gap:1px}
+.hud-r span{font-size:10.5px; color:var(--ink-3); line-height:1.3}
+.hud-r b{
+  font-family:var(--mono); font-size:16px; font-weight:600; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+}
+.hud-r.hot b{color:var(--ember)}
+.hud-legend{display:flex; flex-direction:column; gap:6px}
+.lg3{display:flex; align-items:center; gap:8px; font-size:10.5px; color:var(--ink-3)}
+.lg3 i{flex:none; display:block}
+.lg3 i.beam{width:3px; height:13px; border-radius:2px; background:linear-gradient(180deg,rgba(255,192,122,0),#E8913C)}
+.lg3 i.arc{width:14px; height:2px; border-radius:2px; background:#4FD1B6}
+.lg3 i.pt{width:6px; height:6px; border-radius:50%; background:#FFC07A; box-shadow:0 0 7px #E8913C}
+
+.c3d-btn{
+  background:rgba(22,33,39,.9); border:1px solid var(--line); color:var(--ink-2);
+  border-radius:var(--r); padding:6px 11px; cursor:pointer;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; transition:.16s var(--ease);
+}
+.c3d-btn:hover{color:var(--ink); border-color:var(--ink-4)}
+.c3d-btn[aria-pressed="true"]{background:var(--ember); border-color:var(--ember); color:#070B0D; font-weight:600}
+.c3d-seg{display:flex; border:1px solid var(--line); border-radius:var(--r); overflow:hidden}
+.c3d-seg .c3d-btn{border:0; border-radius:0}
+.c3d-seg .c3d-btn+.c3d-btn{border-left:1px solid var(--line)}
+
+@media (max-width:640px){
+  .hud-tl{top:10px; left:11px}
+  .hud-bl{display:none}
+  .hud-v{font-size:22px; margin-bottom:9px}
+  .hud-r b{font-size:14px}
+  .stage3d{height:clamp(340px,52vh,440px)}
+}
+
 </style>
 </head>
 <body>
@@ -1186,6 +1276,59 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
       <!-- ---------- FLOW ---------- -->
       <div class="console-body console-panel" id="sub-flow" hidden>
+
+        <div class="pane pane3d">
+          <div class="pane-h">
+            <div>
+              <div class="pane-t" data-ko="탄소는 지금 어디로 흐르고 있는가" data-en="Where carbon is moving, right now">탄소는 지금 어디로 흐르고 있는가</div>
+              <div class="pane-s" data-ko="발전 지역 → 소비 지역 · 전력에 실려 이동하는 내재 탄소의 실시간 렌더링" data-en="Generating regions → consuming regions · a real-time rendering of the carbon embodied in moving electricity">발전 지역 → 소비 지역 · 전력에 실려 이동하는 내재 탄소의 실시간 렌더링</div>
+            </div>
+            <div class="row" id="c3dControls"></div>
+          </div>
+
+          <div class="stage3d" id="stage3d">
+            <div class="stage3d-canvas" id="c3dHost"></div>
+            <div class="labels3d" id="c3dLabels" aria-hidden="true"></div>
+
+            <div class="hud hud-tl">
+              <div class="hud-k" data-ko="이 페이지를 연 뒤 흐른 시간" data-en="Elapsed since you opened this page">이 페이지를 연 뒤 흐른 시간</div>
+              <div class="hud-v" id="c3dClock">00:00:00</div>
+              <div class="hud-rows">
+                <div class="hud-r">
+                  <span data-ko="지역 간 이동 전력" data-en="Electricity moved between regions">지역 간 이동 전력</span>
+                  <b id="c3dPower">0 MWh</b>
+                </div>
+                <div class="hud-r hot">
+                  <span data-ko="그 전력에 실려 이동한 탄소" data-en="Carbon carried by that electricity">그 전력에 실려 이동한 탄소</span>
+                  <b id="c3dCarbon">0 t</b>
+                </div>
+                <div class="hud-r">
+                  <span data-ko="같은 시간 국가 총배출" data-en="National emissions over the same time">같은 시간 국가 총배출</span>
+                  <b id="c3dNational">0 t</b>
+                </div>
+              </div>
+            </div>
+
+            <div class="hud hud-bl">
+              <div class="hud-legend">
+                <span class="lg3"><i class="beam"></i><span data-ko="배출 기둥 — 시도별 배출량" data-en="Emission columns — provincial emissions">배출 기둥 — 시도별 배출량</span></span>
+                <span class="lg3"><i class="arc"></i><span data-ko="송전 경로 — 순이동 전력" data-en="Transmission arc — net power moved">송전 경로 — 순이동 전력</span></span>
+                <span class="lg3"><i class="pt"></i><span data-ko="입자 — 이동 중인 내재 탄소" data-en="Particles — carbon in transit">입자 — 이동 중인 내재 탄소</span></span>
+              </div>
+            </div>
+
+            <div class="stage3d-note" id="c3dStatus" data-ko="3D 장면을 불러오는 중…" data-en="Loading the 3D scene…">3D 장면을 불러오는 중…</div>
+            <div class="stage3d-fallback" id="c3dFallback" hidden></div>
+          </div>
+
+          <div class="pane-b">
+            <p class="src">
+              <span data-ko="장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다." data-en="The scene renders annual statistics converted to a per-second rate in real time — it is not a live sensor stream. 152 TWh of net interregional flow per year is 4.82 MWh per second; at Korea's 2022 grid factor of 0.4594 tCO₂/MWh, roughly 2.21 tCO₂ moves to consuming regions every second. Over the same period the country as a whole emits 19.79 tCO₂eq per second.">장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다.</span><br>
+              <span data-ko="해안선은 방위 인지를 돕기 위한 간략화된 윤곽이며 정밀 측량 자료가 아닙니다. 시도 위치는 실제 위경도 좌표를 사용합니다." data-en="The coastline is a simplified outline for orientation, not survey-grade geometry. Provincial positions use real latitude and longitude.">해안선은 방위 인지를 돕기 위한 간략화된 윤곽이며 정밀 측량 자료가 아닙니다. 시도 위치는 실제 위경도 좌표를 사용합니다.</span>
+            </p>
+          </div>
+        </div>
+
         <div class="pane">
           <div class="pane-h">
             <div><div class="pane-t" data-ko="탄소의 이동 경로 — 1차 에너지에서 최종 배출까지" data-en="Carbon pathways — primary energy to final emission">탄소의 이동 경로 — 1차 에너지에서 최종 배출까지</div>
@@ -1196,18 +1339,13 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
         <div class="split split-38">
           <div class="pane">
-            <div class="pane-h"><div><div class="pane-t" data-ko="지역 간 전력 이동 — 배출은 생산지, 소비는 수도권" data-en="Interregional power flow — produced in the provinces, consumed in the capital">지역 간 전력 이동 — 배출은 생산지, 소비는 수도권</div><div class="pane-s" data-ko="전력자급률 기준 순이동 · TWh" data-en="Net flow by self-sufficiency · TWh">전력자급률 기준 순이동 · TWh</div></div></div>
-            <div class="pane-b"><div id="powerFlow"></div></div>
-          </div>
-          <div class="pane">
             <div class="pane-h"><div><div class="pane-t" data-ko="지역별 전력자급률" data-en="Electricity self-sufficiency by region">지역별 전력자급률</div><div class="pane-s" data-ko="발전량 ÷ 소비량 · %" data-en="Generation ÷ consumption · %">발전량 ÷ 소비량 · %</div></div></div>
             <div class="pane-b"><div id="selfSuff"></div></div>
           </div>
-        </div>
-
-        <div class="pane">
-          <div class="pane-h"><div><div class="pane-t" data-ko="수송 부문 이동 배출 구성" data-en="Emissions from moving things">수송 부문 이동 배출 구성</div><div class="pane-s">2022 · 97.0 MtCO₂eq</div></div></div>
-          <div class="pane-b"><div id="transportChart"></div></div>
+          <div class="pane">
+            <div class="pane-h"><div><div class="pane-t" data-ko="수송 부문 이동 배출 구성" data-en="Emissions from moving things">수송 부문 이동 배출 구성</div><div class="pane-s">2022 · 97.0 MtCO₂eq</div></div></div>
+            <div class="pane-b"><div id="transportChart"></div></div>
+          </div>
         </div>
 
         <p class="src" data-ko="출처 — 전력거래소 전력시장통계, 한국전력 전력통계속보, 온실가스종합정보센터 부문별 인벤토리. 지역 간 전력 이동량은 발전량과 소비량의 차이에 기반한 순이동 추정치입니다." data-en="Sources — KPX electricity market statistics, KEPCO statistics, GIR sectoral inventory. Interregional flows are net estimates derived from the difference between generation and consumption.">출처 — 전력거래소 전력시장통계, 한국전력 전력통계속보, 온실가스종합정보센터 부문별 인벤토리. 지역 간 전력 이동량은 발전량과 소비량의 차이에 기반한 순이동 추정치입니다.</p>
@@ -2174,8 +2312,8 @@ function renderSankey(){
 }
 
 /* ---------- interregional power movement ---------- */
-function renderPowerFlow(){
-  var host = $('#powerFlow');
+function renderPowerFlow(hostEl){
+  var host = hostEl || $('#powerFlow');
   if (!visible(host)) return;
   var cols = 4, rows = 7;
   var t = tilePositions(host.clientWidth, cols, rows);
@@ -2391,6 +2529,483 @@ function renderLayers(){
 </script>
 <script>
 "use strict";
+/* ==========================================================================
+   5b. Carbon movement — 3D stage
+   Annual statistics converted to a per-second rate and rendered live.
+   Not a sensor stream; the rate is stated on the panel.
+   ========================================================================== */
+var C3D = (function(){
+  var THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+
+  /* real coordinates for the provinces; a simplified outline for orientation */
+  var GEO = {
+    seoul:[126.98,37.57], incheon:[126.71,37.46], gyeonggi:[127.52,37.41],
+    gangwon:[128.16,37.83], chungbuk:[127.70,36.80], chungnam:[126.80,36.52],
+    daejeon:[127.38,36.35], sejong:[127.29,36.48], jeonbuk:[127.15,35.72],
+    jeonnam:[126.99,34.87], gwangju:[126.85,35.16], gyeongbuk:[128.89,36.40],
+    daegu:[128.60,35.87], gyeongnam:[128.24,35.44], busan:[129.08,35.18],
+    ulsan:[129.31,35.54], jeju:[126.53,33.40]
+  };
+  var COAST = [
+    [126.68,37.79],[126.52,37.66],[126.38,37.44],[126.60,37.12],[126.86,36.98],
+    [126.44,36.86],[126.31,36.72],[126.52,36.48],[126.36,36.22],[126.28,36.02],
+    [126.56,35.94],[126.49,35.66],[126.42,35.38],[126.68,35.15],[126.44,34.96],
+    [126.24,34.76],[126.38,34.44],[126.72,34.32],[127.06,34.60],[127.42,34.72],
+    [127.78,34.92],[128.12,35.04],[128.44,34.84],[128.78,35.02],[129.06,35.12],
+    [129.28,35.52],[129.44,36.02],[129.38,36.58],[129.54,37.06],[129.32,37.56],
+    [129.02,38.02],[128.62,38.34],[128.36,38.62],[127.78,38.32],[127.16,38.30],
+    [126.92,38.02]
+  ];
+  var JEJU = [
+    [126.16,33.36],[126.30,33.24],[126.60,33.22],[126.90,33.32],
+    [126.94,33.48],[126.72,33.56],[126.40,33.55],[126.20,33.48]
+  ];
+
+  /* annual figures → per-second rates (printed under the stage) */
+  var MWH_PER_SEC = 152e6 / 31536000;      /* 152 TWh of net interregional flow */
+  var GRID_EF = 0.4594;                     /* tCO2 per MWh, Korea 2022 */
+  var CARBON_PER_SEC = MWH_PER_SEC * GRID_EF;
+  var NATIONAL_PER_SEC = 624.2e6 / 31536000;
+
+  var K = 18, COSLAT = Math.cos(36 * Math.PI / 180);
+  function px(lon){ return (lon - 127.8) * COSLAT * K; }
+  function pz(lat){ return -(lat - 36.0) * K; }
+
+  var loading = null, ready = false, failed = false;
+  var renderer, scene, camera, raf = 0, clockT = 0, lastFrame = 0;
+  var beams = [], curves = [], labelEls = [], hoverTargets = [];
+  var flowPts, flowData, moteGeo, moteData, groupRoot;
+  var view = { theta:0.16, phi:0.70, r:172, tTheta:0.16, tPhi:0.70, tR:172 };
+  var st = { playing:true, speed:1, elapsed:0, auto:true, dragging:false };
+
+  function lerpC(a, b, t){
+    return new THREE.Color(
+      a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t
+    );
+  }
+  function dotTexture(){
+    var c = document.createElement('canvas'); c.width = c.height = 64;
+    var g = c.getContext('2d');
+    var grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, 'rgba(255,255,255,1)');
+    grd.addColorStop(.28, 'rgba(255,255,255,.8)');
+    grd.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = grd; g.fillRect(0, 0, 64, 64);
+    var t = new THREE.Texture(c); t.needsUpdate = true; return t;
+  }
+  function bigNum(v, units, step){
+    var i = 0;
+    while (v >= step && i < units.length - 1){ v /= step; i++; }
+    return fmt(v, v < 10 ? 2 : v < 100 ? 1 : 0) + ' ' + units[i];
+  }
+
+  function loadThree(){
+    if (window.THREE) return Promise.resolve(true);
+    if (loading) return loading;
+    loading = new Promise(function(res){
+      var s = document.createElement('script');
+      s.src = THREE_URL; s.async = true;
+      s.onload = function(){ res(!!window.THREE); };
+      s.onerror = function(){ res(false); };
+      document.head.appendChild(s);
+    });
+    return loading;
+  }
+
+  function build(){
+    var host = $('#c3dHost');
+    var w = host.clientWidth, h = host.clientHeight;
+
+    renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(w, h);
+    renderer.setClearColor(0x000000, 0);
+    host.appendChild(renderer.domElement);
+
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x070B0D, 0.0042);
+    camera = new THREE.PerspectiveCamera(38, w / h, 1, 3000);
+    groupRoot = new THREE.Group();
+    scene.add(groupRoot);
+
+    /* ground graticule */
+    var grid = new THREE.GridHelper(260, 26, 0x1d3038, 0x121d23);
+    grid.material.transparent = true; grid.material.opacity = .5;
+    groupRoot.add(grid);
+
+    /* land mass + coastline */
+    function landmass(pts, fillOpacity){
+      var shape = new THREE.Shape();
+      pts.forEach(function(p, i){
+        var x = px(p[0]), z = pz(p[1]);
+        if (i === 0) shape.moveTo(x, -z); else shape.lineTo(x, -z);
+      });
+      shape.closePath();
+      var geo = new THREE.ShapeGeometry(shape);
+      var mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+        color:0x0F1E25, transparent:true, opacity:fillOpacity, side:THREE.DoubleSide
+      }));
+      mesh.rotation.x = -Math.PI / 2; mesh.position.y = 0.06;
+      groupRoot.add(mesh);
+
+      var lp = pts.map(function(p){ return new THREE.Vector3(px(p[0]), 0.5, pz(p[1])); });
+      var lgeo = new THREE.BufferGeometry().setFromPoints(lp.concat([lp[0]]));
+      groupRoot.add(new THREE.Line(lgeo, new THREE.LineBasicMaterial({
+        color:0x4FD1B6, transparent:true, opacity:.42
+      })));
+      /* a soft echo above the outline reads as altitude without adding geometry */
+      var l2 = lp.map(function(v){ return new THREE.Vector3(v.x, 3.2, v.z); });
+      var l2geo = new THREE.BufferGeometry().setFromPoints(l2.concat([l2[0]]));
+      groupRoot.add(new THREE.Line(l2geo, new THREE.LineBasicMaterial({
+        color:0x2A6F7C, transparent:true, opacity:.16
+      })));
+    }
+    landmass(COAST, .92);
+    landmass(JEJU, .92);
+
+    /* emission columns — height is the provincial inventory */
+    var cLow = new THREE.Color(0x8A5623), cHigh = new THREE.Color(0xFFC07A);
+    var MAXV = 160;
+    D.regions.forEach(function(r){
+      var g = GEO[r.k]; if (!g) return;
+      var x = px(g[0]), z = pz(g[1]);
+      var hgt = 3 + (r.v / MAXV) * 40;
+      var base = lerpC(cLow, cHigh, Math.min(1, r.v / MAXV));
+
+      var geo = new THREE.CylinderGeometry(0.42, 0.95, hgt, 12, 1, true);
+      var pos = geo.attributes.position, col = [];
+      for (var i = 0; i < pos.count; i++){
+        var t = (pos.getY(i) + hgt / 2) / hgt;          /* 0 base → 1 tip */
+        var f = Math.pow(1 - t, 1.5);                   /* fade upward */
+        col.push(base.r * f, base.g * f, base.b * f);
+      }
+      geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+      var mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+        vertexColors:true, transparent:true, opacity:.95,
+        blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide
+      }));
+      mesh.position.set(x, hgt / 2, z);
+      mesh.userData = r;
+      groupRoot.add(mesh);
+      beams.push(mesh); hoverTargets.push(mesh);
+
+      var ring = new THREE.Mesh(
+        new THREE.RingGeometry(1.3, 1.3 + 1.4 * (r.v / MAXV) + .25, 28),
+        new THREE.MeshBasicMaterial({ color:base, transparent:true, opacity:.5,
+          blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide })
+      );
+      ring.rotation.x = -Math.PI / 2; ring.position.set(x, 0.2, z);
+      groupRoot.add(ring);
+      r._x = x; r._z = z; r._h = hgt;
+    });
+
+    /* transmission arcs — the geography of the movement */
+    var byKey = {};
+    D.regions.forEach(function(r){ byKey[r.k] = r; });
+    D.powerFlows.forEach(function(fl){
+      var a = byKey[fl.from], b = byKey[fl.to];
+      if (!a || !b) return;
+      var v0 = new THREE.Vector3(a._x, a._h * .55, a._z);
+      var v1 = new THREE.Vector3(b._x, b._h * .55, b._z);
+      var dist = v0.distanceTo(v1);
+      var mid = v0.clone().add(v1).multiplyScalar(.5);
+      mid.y += dist * 0.46 + 10;
+      var curve = new THREE.QuadraticBezierCurve3(v0, mid, v1);
+      var tube = new THREE.Mesh(
+        new THREE.TubeGeometry(curve, 54, 0.10 + (fl.v / 38) * 0.30, 6, false),
+        new THREE.MeshBasicMaterial({ color:0x4FD1B6, transparent:true, opacity:.20,
+          blending:THREE.AdditiveBlending, depthWrite:false })
+      );
+      tube.userData = { flow:fl, a:a, b:b };
+      groupRoot.add(tube);
+      hoverTargets.push(tube);
+      curves.push({ curve:curve, v:fl.v, flow:fl });
+    });
+
+    /* particles: the carbon riding along each line */
+    var tex = dotTexture();
+    var n = 0;
+    curves.forEach(function(c){ c.n = Math.max(8, Math.round(c.v * 1.6)); n += c.n; });
+    var pPos = new Float32Array(n * 3), pCol = new Float32Array(n * 3);
+    flowData = new Array(n);
+    var idx = 0, cw = new THREE.Color(0xFFC07A);
+    curves.forEach(function(c, ci){
+      for (var i = 0; i < c.n; i++){
+        flowData[idx] = { c:ci, t:Math.random(), s:0.055 + Math.random() * 0.035 };
+        pCol[idx * 3] = cw.r; pCol[idx * 3 + 1] = cw.g; pCol[idx * 3 + 2] = cw.b;
+        idx++;
+      }
+    });
+    var pg = new THREE.BufferGeometry();
+    pg.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    pg.setAttribute('color', new THREE.BufferAttribute(pCol, 3));
+    flowPts = new THREE.Points(pg, new THREE.PointsMaterial({
+      size:2.4, map:tex, vertexColors:true, transparent:true, opacity:.95,
+      blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true
+    }));
+    groupRoot.add(flowPts);
+
+    /* ambient motes rising over the emitting provinces */
+    var M = 520;
+    var mPos = new Float32Array(M * 3), mCol = new Float32Array(M * 3);
+    moteData = new Array(M);
+    var weighted = [];
+    D.regions.forEach(function(r){
+      var c = Math.max(1, Math.round(r.v / 6));
+      for (var i = 0; i < c; i++) weighted.push(r);
+    });
+    for (var m = 0; m < M; m++){
+      var r = weighted[Math.floor(Math.random() * weighted.length)];
+      moteData[m] = {
+        x:r._x + (Math.random() - .5) * 9, z:r._z + (Math.random() - .5) * 9,
+        y:Math.random() * 46, s:0.9 + Math.random() * 2.2, top:38 + Math.random() * 26
+      };
+      var f = 0.55 + Math.random() * .45;
+      mCol[m * 3] = 0.91 * f; mCol[m * 3 + 1] = 0.57 * f; mCol[m * 3 + 2] = 0.24 * f;
+    }
+    moteGeo = new THREE.BufferGeometry();
+    moteGeo.setAttribute('position', new THREE.BufferAttribute(mPos, 3));
+    moteGeo.setAttribute('color', new THREE.BufferAttribute(mCol, 3));
+    groupRoot.add(new THREE.Points(moteGeo, new THREE.PointsMaterial({
+      size:1.15, map:tex, vertexColors:true, transparent:true, opacity:.5,
+      blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true
+    })));
+
+    buildLabels();
+    bindInput(host);
+    ready = true;
+    $('#c3dStatus').hidden = true;
+  }
+
+  function buildLabels(){
+    var wrap = $('#c3dLabels');
+    wrap.innerHTML = ''; labelEls = [];
+    D.regions.forEach(function(r){
+      if (r._x == null) return;
+      var minor = r.v < 26;
+      var d = el('div', 'lbl3' + (minor ? ' minor' : ''));
+      d.appendChild(el('span', null, LANG === 'ko' ? r.ko : r.en));
+      d.appendChild(el('b', null, fmt(r.v, 1)));
+      wrap.appendChild(d);
+      labelEls.push({ el:d, r:r });
+    });
+  }
+
+  function bindInput(host){
+    var stage = $('#stage3d');
+    var last = null;
+    function down(e){
+      st.dragging = true; st.auto = false;
+      stage.classList.add('dragging');
+      last = { x:(e.touches ? e.touches[0].clientX : e.clientX), y:(e.touches ? e.touches[0].clientY : e.clientY) };
+    }
+    function move(e){
+      var cx = e.touches ? e.touches[0].clientX : e.clientX;
+      var cy = e.touches ? e.touches[0].clientY : e.clientY;
+      if (st.dragging && last){
+        view.tTheta -= (cx - last.x) * 0.006;
+        view.tPhi = Math.max(0.16, Math.min(1.40, view.tPhi - (cy - last.y) * 0.005));
+        last = { x:cx, y:cy };
+        if (e.cancelable) e.preventDefault();
+      } else if (!e.touches){
+        pick(e);
+      }
+    }
+    function up(){ st.dragging = false; last = null; stage.classList.remove('dragging'); }
+    stage.addEventListener('mousedown', down);
+    stage.addEventListener('touchstart', down, { passive:true });
+    window.addEventListener('mousemove', move);
+    stage.addEventListener('touchmove', move, { passive:false });
+    window.addEventListener('mouseup', up);
+    window.addEventListener('touchend', up);
+    stage.addEventListener('mouseleave', function(){ hideTip(); });
+    stage.addEventListener('wheel', function(e){
+      view.tR = Math.max(80, Math.min(280, view.tR * (1 + e.deltaY * 0.0011)));
+      e.preventDefault();
+    }, { passive:false });
+  }
+
+  var ray, pointer;
+  function pick(e){
+    if (!ready) return;
+    ray = ray || new THREE.Raycaster();
+    pointer = pointer || new THREE.Vector2();
+    var b = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((e.clientX - b.left) / b.width) * 2 - 1;
+    pointer.y = -((e.clientY - b.top) / b.height) * 2 + 1;
+    if (Math.abs(pointer.x) > 1 || Math.abs(pointer.y) > 1){ hideTip(); return; }
+    ray.setFromCamera(pointer, camera);
+    var hits = ray.intersectObjects(hoverTargets, false);
+    if (!hits.length){ hideTip(); return; }
+    var u = hits[0].object.userData;
+    if (u && u.flow){
+      var fr = u.a, to = u.b;
+      showTip(e, (LANG === 'ko' ? fr.ko + ' → ' + to.ko : fr.en + ' → ' + to.en), [
+        { k:L({ ko:'순 이동 전력', en:'Net power moved' }), v:fmt(u.flow.v, 0) + ' TWh/' + L({ ko:'년', en:'yr' }), c:'#4FD1B6' },
+        { k:L({ ko:'내재 탄소', en:'Embodied carbon' }), v:fmt(u.flow.v * 1e6 * GRID_EF / 1e6, 2) + ' Mt/' + L({ ko:'년', en:'yr' }), c:'#E8913C' }
+      ]);
+    } else if (u && u.k){
+      showTip(e, LANG === 'ko' ? u.ko : u.en, [
+        { k:L({ ko:'배출량', en:'Emissions' }), v:fmt(u.v, 1) + ' MtCO₂eq', c:'#E8913C' },
+        { k:L({ ko:'전력자급률', en:'Self-sufficiency' }), v:fmt(u.ss, 1) + '%' }
+      ]);
+    }
+  }
+
+  function updateHUD(){
+    var s = st.elapsed;
+    var d = Math.floor(s / 86400), hh = Math.floor(s % 86400 / 3600),
+        mm = Math.floor(s % 3600 / 60), ss = Math.floor(s % 60);
+    var pad = function(n){ return String(n).padStart(2, '0'); };
+    $('#c3dClock').textContent = (d > 0 ? d + (LANG === 'ko' ? '일 ' : 'd ') : '') +
+      pad(hh) + ':' + pad(mm) + ':' + pad(ss);
+    $('#c3dPower').textContent = bigNum(s * MWH_PER_SEC, ['MWh','GWh','TWh'], 1000);
+    $('#c3dCarbon').textContent = bigNum(s * CARBON_PER_SEC, ['t','kt','Mt'], 1000);
+    $('#c3dNational').textContent = bigNum(s * NATIONAL_PER_SEC, ['t','kt','Mt'], 1000);
+  }
+
+  var v3 = null;
+  function positionLabels(){
+    v3 = v3 || new THREE.Vector3();
+    var b = renderer.domElement;
+    labelEls.forEach(function(o){
+      v3.set(o.r._x, o.r._h + 5, o.r._z).project(camera);
+      var vis = v3.z < 1;
+      o.el.style.opacity = vis ? '1' : '0';
+      if (!vis) return;
+      o.el.style.left = ((v3.x * .5 + .5) * b.clientWidth) + 'px';
+      o.el.style.top = ((-v3.y * .5 + .5) * b.clientHeight) + 'px';
+    });
+  }
+
+  function frame(now){
+    raf = requestAnimationFrame(frame);
+    var panel = $('#sub-flow'), viewEl = $('#view-data');
+    if (!ready || !panel || panel.hidden || !viewEl || viewEl.hidden || document.hidden) return;
+
+    var dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.1) : 0.016;
+    lastFrame = now;
+
+    if (st.playing){
+      st.elapsed += dt * st.speed;
+      if (st.auto && !REDUCED) view.tTheta += dt * 0.045;
+      if (!REDUCED){
+        /* flow particles ride the curves */
+        var pos = flowPts.geometry.attributes.position, p = new THREE.Vector3();
+        for (var i = 0; i < flowData.length; i++){
+          var f = flowData[i];
+          f.t += dt * f.s * (st.speed > 1 ? 1.6 : 1);
+          if (f.t > 1) f.t -= 1;
+          curves[f.c].curve.getPoint(f.t, p);
+          pos.setXYZ(i, p.x, p.y, p.z);
+        }
+        pos.needsUpdate = true;
+        /* motes rise and recycle */
+        var mp = moteGeo.attributes.position;
+        for (var m = 0; m < moteData.length; m++){
+          var o = moteData[m];
+          o.y += dt * o.s * (st.speed > 1 ? 2.2 : 1);
+          if (o.y > o.top) o.y = 0;
+          mp.setXYZ(m, o.x, o.y, o.z);
+        }
+        mp.needsUpdate = true;
+      }
+      updateHUD();
+    }
+
+    view.theta += (view.tTheta - view.theta) * 0.09;
+    view.phi   += (view.tPhi   - view.phi)   * 0.09;
+    view.r     += (view.tR     - view.r)     * 0.09;
+    camera.position.set(
+      view.r * Math.sin(view.phi) * Math.sin(view.theta),
+      view.r * Math.cos(view.phi),
+      view.r * Math.sin(view.phi) * Math.cos(view.theta)
+    );
+    camera.lookAt(0, 10, 0);
+    renderer.render(scene, camera);
+    positionLabels();
+  }
+
+  function controls(){
+    var host = $('#c3dControls');
+    if (!host) return;
+    host.innerHTML = '';
+    var play = el('button', 'c3d-btn');
+    play.setAttribute('aria-pressed', String(st.playing));
+    play.textContent = st.playing ? '⏸ ' + L({ ko:'일시정지', en:'Pause' }) : '▶ ' + L({ ko:'재생', en:'Play' });
+    play.addEventListener('click', function(){
+      st.playing = !st.playing;
+      play.setAttribute('aria-pressed', String(st.playing));
+      play.textContent = st.playing ? '⏸ ' + L({ ko:'일시정지', en:'Pause' }) : '▶ ' + L({ ko:'재생', en:'Play' });
+    });
+    host.appendChild(play);
+
+    var seg = el('div', 'c3d-seg');
+    [[1, L({ ko:'실시간', en:'Real time' })], [60, '60×'], [3600, '3600×']].forEach(function(o){
+      var b = el('button', 'c3d-btn', o[1]);
+      b.setAttribute('aria-pressed', String(st.speed === o[0]));
+      b.addEventListener('click', function(){
+        st.speed = o[0];
+        $$('#c3dControls .c3d-seg .c3d-btn').forEach(function(x){ x.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+      });
+      seg.appendChild(b);
+    });
+    host.appendChild(seg);
+
+    var rst = el('button', 'c3d-btn', '⟲ ' + L({ ko:'시점 초기화', en:'Reset view' }));
+    rst.addEventListener('click', function(){
+      view.tTheta = 0.16; view.tPhi = 0.70; view.tR = 172; st.auto = true;
+    });
+    host.appendChild(rst);
+  }
+
+  function fallback(){
+    failed = true;
+    $('#c3dStatus').hidden = true;
+    var fb = $('#c3dFallback');
+    fb.hidden = false;
+    fb.innerHTML = '';
+    var note = el('p', 'src', L({
+      ko:'이 브라우저에서 3D 장면을 사용할 수 없어 2D 흐름도로 표시합니다.',
+      en:'The 3D scene is unavailable in this browser, so the flows are shown in 2D.'
+    }));
+    fb.appendChild(note);
+    var m = el('div'); m.id = 'powerFlow2d'; fb.appendChild(m);
+    renderPowerFlow(m);
+  }
+
+  function resize(){
+    if (!ready) return;
+    var host = $('#c3dHost');
+    if (!host.clientWidth) return;
+    camera.aspect = host.clientWidth / host.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(host.clientWidth, host.clientHeight);
+  }
+
+  return {
+    ensure:function(){
+      var panel = $('#sub-flow');
+      if (!panel || panel.hidden || failed) { if (ready) { controls(); buildLabels(); } return; }
+      if (ready){ controls(); buildLabels(); resize(); return; }
+      if (loading) return;
+      controls();
+      loadThree().then(function(ok){
+        if (!ok || !window.THREE){ fallback(); return; }
+        try {
+          build();
+          if (!raf) raf = requestAnimationFrame(frame);
+        } catch (err){
+          if (window.console) console.warn('3D scene failed:', err);
+          fallback();
+        }
+      });
+    },
+    resize:resize
+  };
+})();
+
 /* ==========================================================================
    6. Registry, ledger & market — DEMO SIMULATION
    Everything below runs in the browser. Hashes are genuine SHA-256, the
@@ -2956,7 +3571,8 @@ function renderAll(){
   renderEsg(); renderFund();
   renderTrend(); renderSector(); renderEnergy(); renderTransport();
   renderKrMap(); renderRegionBars();
-  renderSankey(); renderPowerFlow(); renderSelfSuff();
+  renderSankey(); renderSelfSuff();
+  C3D.ensure();
   renderMarket();
   if (window.__calcRun) window.__calcRun();
 }
@@ -2964,7 +3580,7 @@ function renderAll(){
 var rzTimer;
 window.addEventListener('resize', function(){
   clearTimeout(rzTimer);
-  rzTimer = setTimeout(renderAll, 180);
+  rzTimer = setTimeout(function(){ renderAll(); C3D.resize(); }, 180);
 });
 
 (function boot(){
