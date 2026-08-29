@@ -2837,6 +2837,25 @@ var C3D = (function(){
     bindInput(host);
     ready = true;
     $('#c3dStatus').hidden = true;
+    /* paint once immediately — requestAnimationFrame does not run while the
+       tab is in the background, and the stage should never be blank */
+    applyCamera(true);
+    renderer.render(scene, camera);
+    positionLabels();
+    updateHUD();
+  }
+
+  function applyCamera(snap){
+    var e = snap ? 1 : 0.09;
+    view.theta += (view.tTheta - view.theta) * e;
+    view.phi   += (view.tPhi   - view.phi)   * e;
+    view.r     += (view.tR     - view.r)     * e;
+    camera.position.set(
+      view.r * Math.sin(view.phi) * Math.sin(view.theta),
+      view.r * Math.cos(view.phi),
+      view.r * Math.sin(view.phi) * Math.cos(view.theta)
+    );
+    camera.lookAt(0, 10, 0);
   }
 
   function buildLabels(){
@@ -2983,15 +3002,7 @@ var C3D = (function(){
       updateHUD();
     }
 
-    view.theta += (view.tTheta - view.theta) * 0.09;
-    view.phi   += (view.tPhi   - view.phi)   * 0.09;
-    view.r     += (view.tR     - view.r)     * 0.09;
-    camera.position.set(
-      view.r * Math.sin(view.phi) * Math.sin(view.theta),
-      view.r * Math.cos(view.phi),
-      view.r * Math.sin(view.phi) * Math.cos(view.theta)
-    );
-    camera.lookAt(0, 10, 0);
+    applyCamera(false);
     renderer.render(scene, camera);
     positionLabels();
   }
