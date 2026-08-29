@@ -75,12 +75,16 @@ a{color:inherit; text-decoration:none}
 /* ---------- type ---------- */
 .eyebrow{
   font-family:var(--mono); font-size:11px; font-weight:500;
-  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+  letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3);
   display:flex; align-items:center; gap:10px;
 }
 .eyebrow::before{content:""; width:18px; height:1px; background:var(--ember); flex:none}
 .eyebrow.plain::before{display:none}
 h1,h2,h3,h4{margin:0; font-weight:600; text-wrap:balance; letter-spacing:-.025em; line-height:1.14}
+/* Korean must not break inside a word — the browser default splits mid-syllable-block */
+h1,h2,h3,h4,p,li,td,th,span,.lead,.body-sm,.stat-k,.layer-t,.layer-s,.mod span,.hold-n,.hold-s{
+  word-break:keep-all; overflow-wrap:break-word;
+}
 .d1{font-size:clamp(36px,6.6vw,70px); font-weight:600; line-height:1.05; letter-spacing:-.04em}
 .d2{font-size:clamp(26px,3.5vw,42px); line-height:1.11; letter-spacing:-.032em}
 .d3{font-size:clamp(19px,2.1vw,26px); letter-spacing:-.026em}
@@ -148,7 +152,7 @@ h1,h2,h3,h4{margin:0; font-weight:600; text-wrap:balance; letter-spacing:-.025em
              linear-gradient(180deg, transparent 58%, var(--ground) 100%);
 }
 .hero-in{position:relative; z-index:2; display:flex; flex-direction:column; gap:24px; max-width:940px}
-.hero .thin{font-weight:300; color:var(--ink-2)}
+.hero .thin{font-weight:300; color:var(--ink-2); display:block; font-size:clamp(18px,2.3vw,29px); line-height:1.4; letter-spacing:-.02em; margin-top:14px}
 .cta-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:4px}
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
@@ -166,7 +170,7 @@ h1,h2,h3,h4{margin:0; font-weight:600; text-wrap:balance; letter-spacing:-.025em
 .ticker{border-block:1px solid var(--line-soft); background:var(--ground-2); display:grid; grid-template-columns:repeat(4,1fr)}
 .tick{padding:15px clamp(14px,2.3vw,26px); display:flex; flex-direction:column; gap:4px; min-width:0}
 .tick+.tick{border-left:1px solid var(--line-soft)}
-.tick-k{font-family:var(--mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.tick-k{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .tick-v{font-family:var(--mono); font-size:clamp(16px,2vw,23px); font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.03em}
 .tick-d{font-size:11px; color:var(--ink-3); font-family:var(--mono)}
 
@@ -366,7 +370,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 .pane{border:1px solid var(--line-soft); border-radius:var(--r2); background:var(--ground-2); overflow:hidden}
 .pane-h{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:13px 16px; border-bottom:1px solid var(--line-soft); flex-wrap:wrap}
 .pane-t{font-size:13.5px; font-weight:600; letter-spacing:-.015em}
-.pane-s{font-family:var(--mono); font-size:10.5px; color:var(--ink-4); letter-spacing:.05em}
+.pane-s{font-family:var(--mono); font-size:10.5px; color:var(--ink-4); letter-spacing:.02em; line-height:1.5}
 .pane-b{padding:16px}
 .pane-b.tight{padding:10px 12px}
 
@@ -432,7 +436,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
   background:var(--ground); border:1px solid var(--line-soft); border-radius:var(--r); padding:8px 10px; line-height:1.5;
 }
 .hashline.dimh{color:var(--ink-3)}
-.mono-k{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-4)}
+.mono-k{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-4)}
 
 .book{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line-soft)}
 .book-col{background:var(--ground-2); padding:0}
@@ -2739,7 +2743,18 @@ function renderBook(){
   mid.appendChild(el('span', 'mono-k', L({ ko:'스프레드', en:'Spread' })));
   mid.appendChild(el('span', 'num', won(S.book.asks[0].px - S.book.bids[0].px)));
   host.appendChild(mid);
+  syncOrderPrice();
 }
+/* keep the limit price marketable unless the trader has typed their own */
+function syncOrderPrice(force){
+  var px = $('#ordPx'), side = $('#ordSide');
+  if (!px || !side || !S.book.asks.length) return;
+  if (document.activeElement === px) return;
+  if (!force && px.dataset.touched === '1') return;
+  px.value = side.value === 'buy' ? S.book.asks[0].px : S.book.bids[0].px;
+}
+$('#ordPx') && $('#ordPx').addEventListener('input', function(){ this.dataset.touched = '1'; });
+$('#ordSide') && $('#ordSide').addEventListener('change', function(){ syncOrderPrice(true); });
 function bookRow(o, side, maxQ){
   var r = el('div', 'book-r ' + side);
   var d = el('span', 'depth'); d.style.width = (o.qty / maxQ * 100) + '%';
@@ -2850,7 +2865,13 @@ $('#orderForm') && $('#orderForm').addEventListener('submit', function(ev){
   var levels = side === 'buy' ? S.book.asks : S.book.bids;
   var eligible = levels.filter(function(o){ return side === 'buy' ? o.px <= px : o.px >= px; });
   if (!eligible.length){
-    toast(L({ ko:'지정가에 맞는 호가가 없습니다. 가격을 조정해 주세요.', en:'No matching level at that limit. Adjust the price.' }), 'bad');
+    var best = side === 'buy' ? S.book.asks[0].px : S.book.bids[0].px;
+    toast(L({
+      ko:'지정가가 체결 범위를 벗어났습니다. 현재 최우선 ' + (side === 'buy' ? '매도' : '매수') + '호가는 ' + won(best) + '입니다.',
+      en:'That limit is outside the book. The best ' + (side === 'buy' ? 'ask' : 'bid') + ' is ' + won(best) + '.'
+    }), 'bad');
+    $('#ordPx').value = best;
+    $('#ordPx').dataset.touched = '';
     return;
   }
   var avail = eligible.reduce(function(a, o){ return a + o.qty; }, 0);
@@ -2883,6 +2904,7 @@ $('#orderForm') && $('#orderForm').addEventListener('submit', function(ev){
     qty:fmt(filled) + ' tCO2eq', avg_price:won(avg), settlement:won(cost)
   }).then(function(){
     btn.disabled = false;
+    $('#ordPx').dataset.touched = '';
     buildBook(); renderBook(); renderHoldings(); renderFills(); renderPrice(); renderTape(); saveState();
     toast(L({
       ko:(side === 'buy' ? '매수' : '매도') + ' ' + fmt(filled) + ' tCO₂eq 체결 · 평균 ' + won(avg) + ' — 온체인 기록 완료',
