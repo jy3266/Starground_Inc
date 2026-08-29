@@ -533,7 +533,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
   content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
   background:
     repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 3px),
-    radial-gradient(88% 74% at 50% 50%, transparent 38%, rgba(0,0,0,.78) 100%);
+    radial-gradient(92% 80% at 50% 50%, transparent 46%, rgba(0,0,0,.6) 100%);
 }
 .stage3d-note{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:4;
@@ -2714,7 +2714,7 @@ var C3D = (function(){
        give it structure so it does not read as flat static. */
     var seeds = [];
     for (var s = 0; s < 72; s++){
-      var sa = Math.random() * 6.2832, sr = Math.pow(Math.random(), 0.62) * 250;
+      var sa = Math.random() * 6.2832, sr = Math.pow(Math.random(), 0.55) * 152;
       seeds.push({ x:Math.cos(sa) * sr, z:Math.sin(sa) * sr });
     }
     function nearSeed(from){
@@ -2730,17 +2730,17 @@ var C3D = (function(){
       var mode = Math.random(), gx, gz;
       if (mode < 0.44){
         var s0 = seeds[(Math.random() * seeds.length) | 0];
-        var ca = Math.random() * 6.2832, cd = Math.pow(Math.random(), 2.3) * 30;
+        var ca = Math.random() * 6.2832, cd = Math.pow(Math.random(), 2.3) * 24;
         gx = s0.x + Math.cos(ca) * cd; gz = s0.z + Math.sin(ca) * cd;
       } else if (mode < 0.80){
         var s1 = seeds[(Math.random() * seeds.length) | 0], s2 = nearSeed(s1), tt = Math.random();
         gx = s1.x + (s2.x - s1.x) * tt + (Math.random() - .5) * 10;
         gz = s1.z + (s2.z - s1.z) * tt + (Math.random() - .5) * 10;
       } else {
-        var ua = Math.random() * 6.2832, ur = Math.pow(Math.random(), 0.5) * 280;
+        var ua = Math.random() * 6.2832, ur = Math.pow(Math.random(), 0.5) * 178;
         gx = Math.cos(ua) * ur; gz = Math.sin(ua) * ur;
       }
-      put(gx, Math.random() * 2.4, gz, 0.014 + Math.random() * 0.042);
+      put(gx, Math.random() * 2.4, gz, 0.018 + Math.random() * 0.05);
     }
     while (k < TOTAL) put((Math.random() - .5) * 420, Math.random() * 1.6, (Math.random() - .5) * 440, 0.02);
 
