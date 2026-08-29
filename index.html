@@ -562,9 +562,9 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
   color:rgba(255,255,255,.42); margin-bottom:5px;
 }
 .hud-v{
-  font-family:var(--mono); font-size:clamp(26px,3.4vw,38px); font-weight:300;
-  letter-spacing:.02em; font-variant-numeric:tabular-nums; line-height:1;
-  color:#fff; margin-bottom:16px;
+  font-family:var(--mono); font-size:clamp(20px,2.2vw,26px); font-weight:300;
+  letter-spacing:.04em; font-variant-numeric:tabular-nums; line-height:1;
+  color:#fff; margin-bottom:13px;
 }
 .hud-rows{display:flex; flex-direction:column; gap:9px; border-top:1px solid rgba(255,255,255,.14); padding-top:11px}
 .hud-r{display:flex; flex-direction:column; gap:2px}
@@ -2680,11 +2680,13 @@ var C3D = (function(){
       var n = Math.round(nCluster * (r.v / totV));
       for (var i = 0; i < n; i++){
         var ang = Math.random() * 6.2832;
-        var d = r._spread * Math.pow(Math.random(), 1.9);      /* dense core */
+        var d = r._spread * Math.pow(Math.random(), 1.6);      /* dense core */
         var y = r._h * Math.pow(Math.random(), 2.3);            /* thins upward */
         var core = 1 - d / r._spread;
+        /* alpha stays low: brightness is earned by how many points overlap,
+           not by making each one bright, or the cores clip to flat white */
         put(r._x + Math.cos(ang) * d, y, r._z + Math.sin(ang) * d,
-            0.16 + core * 0.5 * (1 - y / r._h) + Math.random() * 0.14);
+            0.04 + core * 0.17 * (1 - y / r._h) + Math.random() * 0.07);
       }
     });
 
@@ -2695,12 +2697,12 @@ var C3D = (function(){
       var n = Math.round(nFilament * (c.v / totF));
       for (var i = 0; i < n; i++){
         c.curve.getPoint(Math.random(), tmp);
-        var j = 0.35 + 2.6 * Math.pow(Math.random(), 2.6);
+        var j = 0.16 + 1.9 * Math.pow(Math.random(), 3.2);   /* tight core, faint halo */
         var a1 = Math.random() * 6.2832, a2 = Math.acos(2 * Math.random() - 1);
         put(tmp.x + Math.sin(a2) * Math.cos(a1) * j,
             tmp.y + Math.cos(a2) * j * 0.7,
             tmp.z + Math.sin(a2) * Math.sin(a1) * j,
-            0.10 + (1 - j / 3) * 0.34);
+            0.05 + (1 - j / 2.1) * 0.20);
       }
     });
 
@@ -2710,9 +2712,9 @@ var C3D = (function(){
       var far = Math.random() < 0.30;
       var x = far ? (Math.random() - .5) * 210 : lo + Math.random() * (hi - lo);
       var z = far ? (Math.random() - .5) * 230 : zl + Math.random() * (zh - zl);
-      put(x, Math.random() * (far ? 1.2 : 3.4), z, far ? 0.04 + Math.random() * 0.06 : 0.07 + Math.random() * 0.13);
+      put(x, Math.random() * (far ? 1.2 : 3.4), z, far ? 0.022 + Math.random() * 0.03 : 0.035 + Math.random() * 0.06);
     }
-    while (k < TOTAL) put((Math.random() - .5) * 200, Math.random() * 1.2, (Math.random() - .5) * 220, 0.05);
+    while (k < TOTAL) put((Math.random() - .5) * 200, Math.random() * 1.2, (Math.random() - .5) * 220, 0.03);
 
     var fg = new THREE.BufferGeometry();
     fg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -2798,24 +2800,28 @@ var C3D = (function(){
     var ranked = D.regions.filter(function(r){ return r._x != null; }).map(function(r){
       return { d:Math.sqrt(Math.pow(r._x - cx, 2) + Math.pow(r._z - cz, 2)), v:r.v };
     }).sort(function(a, b){ return a.d - b.d; });
-    var acc = 0, R = ranked[ranked.length - 1].d;
+    var acc = 0, R = ranked[ranked.length - 1].d, ROUT = ranked[ranked.length - 1].d;
     for (var q = 0; q < ranked.length; q++){ acc += ranked[q].v; if (acc >= totV * 0.5){ R = ranked[q].d; break; } }
-    reticle = { x:cx, z:cz, r:R, km:R * (111 / K) };
+    reticle = { x:cx, z:cz, r:R, km:R * (111 / K), out:ROUT, outKm:ROUT * (111 / K) };
 
-    var ringPts = [];
-    for (var a3 = 0; a3 <= 128; a3++){
-      var th = a3 / 128 * 6.2832;
-      ringPts.push(new THREE.Vector3(cx + Math.cos(th) * R, 0.5, cz + Math.sin(th) * R));
+    function ring(rad, op){
+      var p = [];
+      for (var a3 = 0; a3 <= 192; a3++){
+        var th = a3 / 192 * 6.2832;
+        p.push(new THREE.Vector3(cx + Math.cos(th) * rad, 0.5, cz + Math.sin(th) * rad));
+      }
+      groupRoot.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p),
+        new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:op,
+          blending:THREE.AdditiveBlending, depthWrite:false })));
     }
-    groupRoot.add(new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(ringPts),
-      new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:.5, blending:THREE.AdditiveBlending, depthWrite:false })
-    ));
+    ring(ROUT, .34);   /* every province inside */
+    ring(R, .5);       /* half the national inventory inside */
+    /* the rule runs through the centroid, the width of the outer ring */
     groupRoot.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(cx - R, 0.5, cz), new THREE.Vector3(cx + R, 0.5, cz)
+        new THREE.Vector3(cx - ROUT, 0.5, cz), new THREE.Vector3(cx + ROUT, 0.5, cz)
       ]),
-      new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:.62, blending:THREE.AdditiveBlending, depthWrite:false })
+      new THREE.LineBasicMaterial({ color:0xffffff, transparent:true, opacity:.55, blending:THREE.AdditiveBlending, depthWrite:false })
     ));
 
     /* invisible hit volumes — the field itself cannot be picked */
