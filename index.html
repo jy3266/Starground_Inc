@@ -1328,7 +1328,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
           <div class="pane-b">
             <p class="src">
               <span data-ko="장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다." data-en="The scene renders annual statistics converted to a per-second rate in real time — it is not a live sensor stream. 152 TWh of net interregional flow per year is 4.82 MWh per second; at Korea's 2022 grid factor of 0.4594 tCO₂/MWh, roughly 2.21 tCO₂ moves to consuming regions every second. Over the same period the country as a whole emits 19.79 tCO₂eq per second.">장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다.</span><br>
-              <span data-ko="해안선은 방위 인지를 돕기 위한 간략화된 윤곽이며 정밀 측량 자료가 아닙니다. 시도 위치는 실제 위경도 좌표를 사용합니다." data-en="The coastline is a simplified outline for orientation, not survey-grade geometry. Provincial positions use real latitude and longitude.">해안선은 방위 인지를 돕기 위한 간략화된 윤곽이며 정밀 측량 자료가 아닙니다. 시도 위치는 실제 위경도 좌표를 사용합니다.</span>
+              <span data-ko="시도 위치는 실제 위경도 좌표를 사용하며, 밀집도와 기둥 높이는 시도별 배출량입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다." data-en="Provincial positions use real latitude and longitude; density and column height are the provincial inventory. The two circles are the radii around the emission-weighted centroid containing 50% and 100% of the national inventory. The coastline is a simplified outline, and the background grain is a compositional ground carrying no quantity.">시도 위치는 실제 위경도 좌표를 사용하며, 밀집도와 기둥 높이는 시도별 배출량입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다.</span>
             </p>
           </div>
         </div>
@@ -2655,14 +2655,14 @@ var C3D = (function(){
       var v0 = new THREE.Vector3(a._x, a._h * .42, a._z);
       var v1 = new THREE.Vector3(b._x, b._h * .42, b._z);
       var mid = v0.clone().add(v1).multiplyScalar(.5);
-      mid.y += v0.distanceTo(v1) * 0.42 + 9;
+      mid.y += v0.distanceTo(v1) * 0.24 + 5;
       curves.push({ curve:new THREE.QuadraticBezierCurve3(v0, mid, v1), v:fl.v, flow:fl, a:a, b:b });
     });
 
     /* ---------- the field: one static cloud, never rewritten ---------- */
-    var TOTAL = small ? 46000 : 152000;
-    var nCluster = Math.round(TOTAL * 0.50);
-    var nFilament = Math.round(TOTAL * 0.27);
+    var TOTAL = small ? 62000 : 210000;
+    var nCluster = Math.round(TOTAL * 0.34);
+    var nFilament = Math.round(TOTAL * 0.20);
     var nNoise = TOTAL - nCluster - nFilament;
 
     var pos = new Float32Array(TOTAL * 3), col = new Float32Array(TOTAL * 3);
@@ -2706,15 +2706,41 @@ var C3D = (function(){
       }
     });
 
-    /* background grain — the land, faintly, and the void around it */
-    var lo = -34, hi = 34, zl = -52, zh = 56;
-    for (var i = 0; i < nNoise; i++){
-      var far = Math.random() < 0.30;
-      var x = far ? (Math.random() - .5) * 210 : lo + Math.random() * (hi - lo);
-      var z = far ? (Math.random() - .5) * 230 : zl + Math.random() * (zh - zl);
-      put(x, Math.random() * (far ? 1.2 : 3.4), z, far ? 0.022 + Math.random() * 0.03 : 0.035 + Math.random() * 0.06);
+    /* Ambient grain. This is the ground of the composition, not a
+       measurement — it carries no quantity and is kept far below the
+       data marks in brightness. Seeded clumps and strands between them
+       give it structure so it does not read as flat static. */
+    var seeds = [];
+    for (var s = 0; s < 72; s++){
+      var sa = Math.random() * 6.2832, sr = Math.pow(Math.random(), 0.62) * 250;
+      seeds.push({ x:Math.cos(sa) * sr, z:Math.sin(sa) * sr });
     }
-    while (k < TOTAL) put((Math.random() - .5) * 200, Math.random() * 1.2, (Math.random() - .5) * 220, 0.03);
+    function nearSeed(from){
+      var best = null, bd = Infinity;
+      for (var t = 0; t < 3; t++){
+        var c = seeds[(Math.random() * seeds.length) | 0];
+        var d = Math.pow(c.x - from.x, 2) + Math.pow(c.z - from.z, 2);
+        if (d > 1 && d < bd){ bd = d; best = c; }
+      }
+      return best || seeds[0];
+    }
+    for (var i = 0; i < nNoise; i++){
+      var mode = Math.random(), gx, gz;
+      if (mode < 0.44){
+        var s0 = seeds[(Math.random() * seeds.length) | 0];
+        var ca = Math.random() * 6.2832, cd = Math.pow(Math.random(), 2.3) * 30;
+        gx = s0.x + Math.cos(ca) * cd; gz = s0.z + Math.sin(ca) * cd;
+      } else if (mode < 0.80){
+        var s1 = seeds[(Math.random() * seeds.length) | 0], s2 = nearSeed(s1), tt = Math.random();
+        gx = s1.x + (s2.x - s1.x) * tt + (Math.random() - .5) * 10;
+        gz = s1.z + (s2.z - s1.z) * tt + (Math.random() - .5) * 10;
+      } else {
+        var ua = Math.random() * 6.2832, ur = Math.pow(Math.random(), 0.5) * 280;
+        gx = Math.cos(ua) * ur; gz = Math.sin(ua) * ur;
+      }
+      put(gx, Math.random() * 2.4, gz, 0.014 + Math.random() * 0.042);
+    }
+    while (k < TOTAL) put((Math.random() - .5) * 420, Math.random() * 1.6, (Math.random() - .5) * 440, 0.02);
 
     var fg = new THREE.BufferGeometry();
     fg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
@@ -2734,20 +2760,20 @@ var C3D = (function(){
       var n = Math.round(nMove * (c.v / totF));
       for (var i = 0; i < n && idx < nMove; i++){
         flowData[idx] = { c:ci, t:Math.random(), s:0.045 + Math.random() * 0.03, j:(Math.random() - .5) * 1.5 };
-        var a = 0.55 + Math.random() * 0.45;
+        var a = 0.30 + Math.random() * 0.38;
         mCol[idx * 3] = mCol[idx * 3 + 1] = mCol[idx * 3 + 2] = a;
         idx++;
       }
     });
     while (idx < nMove){
       flowData[idx] = { c:Math.floor(Math.random() * curves.length), t:Math.random(), s:0.05, j:0 };
-      mCol[idx * 3] = mCol[idx * 3 + 1] = mCol[idx * 3 + 2] = 0.7; idx++;
+      mCol[idx * 3] = mCol[idx * 3 + 1] = mCol[idx * 3 + 2] = 0.45; idx++;
     }
     var mg = new THREE.BufferGeometry();
     mg.setAttribute('position', new THREE.BufferAttribute(mPos, 3));
     mg.setAttribute('color', new THREE.BufferAttribute(mCol, 3));
     flowPts = new THREE.Points(mg, new THREE.PointsMaterial({
-      size:2.6, vertexColors:true, transparent:true, opacity:1,
+      size:2.0, vertexColors:true, transparent:true, opacity:1,
       blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:false
     }));
     groupRoot.add(flowPts);
