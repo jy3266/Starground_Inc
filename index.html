@@ -2400,7 +2400,9 @@ function renderSelfSuff(){
     var t = sv('text', { x:labelW - 8, y:cy + 4, 'text-anchor':'end', class:'lbl' });
     t.textContent = LANG === 'ko' ? r.ko : r.en; f.svg.appendChild(t);
     f.svg.appendChild(sv('rect', { x:x, y:cy - 5.5, width:bw, height:11, rx:2, fill:c }));
-    var v = sv('text', { x:(surplus ? x + bw + 7 : x - 7), y:cy + 4, class:'lbl-em', 'text-anchor':surplus ? 'start' : 'end' });
+    /* both sides label to the right of the reference line: a deficit bar
+       grows leftward and its value would otherwise land on the name */
+    var v = sv('text', { x:(surplus ? x + bw + 7 : ref + 7), y:cy + 4, class:'lbl-em', 'text-anchor':'start' });
     v.textContent = fmt(r.ss, 1) + '%'; f.svg.appendChild(v);
     var hit = sv('rect', { x:0, y:y, width:f.w, height:rowH, fill:'transparent' });
     hit.addEventListener('mousemove', function(e){
