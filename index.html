@@ -173,6 +173,22 @@ h1,h2,h3,h4,p,li,td,th,span,.lead,.body-sm,.stat-k,.layer-t,.layer-s,.mod span,.
 .tick-k{font-family:var(--mono); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-4); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .tick-v{font-family:var(--mono); font-size:clamp(16px,2vw,23px); font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.03em}
 .tick-d{font-size:11px; color:var(--ink-3); font-family:var(--mono)}
+.tick-k .live-dot{margin-right:6px; vertical-align:1px}
+
+/* live strip — clock-driven estimates, updated every second */
+.live-dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--crit); box-shadow:0 0 0 0 rgba(226,97,92,.55); animation:livePulse 1.8s var(--ease) infinite; flex:none}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(226,97,92,.55)} 70%{box-shadow:0 0 0 7px rgba(226,97,92,0)} 100%{box-shadow:0 0 0 0 rgba(226,97,92,0)}}
+@media (prefers-reduced-motion: reduce){ .live-dot{animation:none} }
+.live-strip{border:1px solid var(--line-soft); background:var(--ground-2); border-radius:var(--r2); padding:14px 16px 6px; margin:0 0 18px}
+.live-h{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-2); flex-wrap:wrap}
+.live-clock{margin-left:auto; color:var(--ink-3); letter-spacing:0; text-transform:none}
+.live-cells{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1px; margin-top:12px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:var(--r)}
+.live-c{background:var(--ground-2); padding:11px 13px; display:flex; flex-direction:column; gap:3px; min-width:0}
+.live-k{font-size:11.5px; color:var(--ink-3)}
+.live-c b{font-family:var(--mono); font-size:clamp(15px,1.8vw,20px); font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-.02em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.live-u{font-family:var(--mono); font-size:10.5px; color:var(--ink-4)}
+.live-note{margin-top:10px}
+@media (max-width:720px){ .live-cells{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
 /* ---------- panels ---------- */
 .grid{display:grid; gap:1px; background:var(--line-soft); border:1px solid var(--line-soft); border-radius:var(--r2); overflow:hidden}
@@ -664,19 +680,19 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
   <div class="ticker" id="homeTicker">
     <div class="tick">
-      <span class="tick-k" data-ko="국가 총 온실가스 배출량 (2023 잠정)" data-en="National GHG emissions (2023 prov.)">국가 총 온실가스 배출량 (2023 잠정)</span>
-      <span class="tick-v"><span class="cnt" data-count="624.2" data-dec="1">624.2</span> <span class="dim" style="font-size:12px">MtCO₂eq</span></span>
-      <span class="tick-d delta dn">▼ 4.6% <span data-ko="전년 대비" data-en="YoY">전년 대비</span></span>
+      <span class="tick-k" data-ko="국가 총 온실가스 배출량 (2025 잠정)" data-en="National GHG emissions (2025 prov.)">국가 총 온실가스 배출량 (2025 잠정)</span>
+      <span class="tick-v"><span class="cnt" data-count="685.7" data-dec="1">685.7</span> <span class="dim" style="font-size:12px">MtCO₂eq</span></span>
+      <span class="tick-d delta dn">▼ 0.9% <span data-ko="전년 대비 · 2018년 대비 −11.4%" data-en="YoY · −11.4% vs 2018">전년 대비 · 2018년 대비 −11.4%</span></span>
+    </div>
+    <div class="tick tick-live">
+      <span class="tick-k"><i class="live-dot" aria-hidden="true"></i><span class="live-year-k" data-ko="올해 누적 배출 · 실시간 추정" data-en="Emitted so far this year · live estimate">올해 누적 배출 · 실시간 추정</span></span>
+      <span class="tick-v"><span class="live-ytd num">—</span> <span class="dim" style="font-size:12px">tCO₂eq</span></span>
+      <span class="tick-d" data-ko="최신 연간 배출량 ÷ 연간 초 · 한국 시간 기준" data-en="Latest annual total ÷ seconds per year · KST">최신 연간 배출량 ÷ 연간 초 · 한국 시간 기준</span>
     </div>
     <div class="tick">
-      <span class="tick-k" data-ko="2018년 정점 대비 감축" data-en="Reduction vs 2018 peak">2018년 정점 대비 감축</span>
-      <span class="tick-v"><span class="cnt" data-count="14.2" data-dec="1">14.2</span><span class="dim" style="font-size:12px">%</span></span>
-      <span class="tick-d" data-ko="정점 727.6 → 624.2" data-en="Peak 727.6 → 624.2">정점 727.6 → 624.2</span>
-    </div>
-    <div class="tick">
-      <span class="tick-k" data-ko="2030 NDC 목표" data-en="2030 NDC target">2030 NDC 목표</span>
-      <span class="tick-v"><span class="cnt" data-count="436.6" data-dec="1">436.6</span> <span class="dim" style="font-size:12px">MtCO₂eq</span></span>
-      <span class="tick-d" data-ko="2018년 대비 −40%" data-en="−40% vs 2018">2018년 대비 −40%</span>
+      <span class="tick-k" data-ko="2035 NDC 목표 (2025.11 확정)" data-en="2035 NDC target (set Nov 2025)">2035 NDC 목표 (2025.11 확정)</span>
+      <span class="tick-v">−<span class="cnt" data-count="53" data-dec="0">53</span>~61<span class="dim" style="font-size:12px">%</span></span>
+      <span class="tick-d" data-ko="2018년 대비 · 2030 NDC는 −40%" data-en="vs 2018 · 2030 NDC is −40%">2018년 대비 · 2030 NDC는 −40%</span>
     </div>
     <div class="tick">
       <span class="tick-k" data-ko="국내 탄소데이터 검증시장 (2030 전망)" data-en="KR carbon-data verification market (2030E)">국내 탄소데이터 검증시장 (2030 전망)</span>
@@ -1216,32 +1232,43 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
       <div class="console-body console-panel" id="sub-emissions">
         <div class="statrow g4">
           <div class="stat">
-            <span class="stat-k" data-ko="총배출량 (2023 잠정)" data-en="Total emissions (2023 prov.)">총배출량 (2023 잠정)</span>
-            <span class="stat-v">624.2<span class="stat-u"> MtCO₂eq</span></span>
-            <span class="delta dn">▼ 30.3 <span data-ko="전년 대비" data-en="YoY">전년 대비</span></span>
+            <span class="stat-k" data-ko="총배출량 (2025 잠정)" data-en="Total emissions (2025 prov.)">총배출량 (2025 잠정)</span>
+            <span class="stat-v">685.7<span class="stat-u"> MtCO₂eq</span></span>
+            <span class="delta dn">▼ 6.1 <span data-ko="전년 대비 (−0.9%)" data-en="YoY (−0.9%)">전년 대비 (−0.9%)</span></span>
           </div>
           <div class="stat">
-            <span class="stat-k" data-ko="순배출량 (흡수원 반영)" data-en="Net emissions (incl. LULUCF)">순배출량 (흡수원 반영)</span>
-            <span class="stat-v">585.5<span class="stat-u"> MtCO₂eq</span></span>
-            <span class="stat-n" data-ko="LULUCF 흡수 −38.7" data-en="LULUCF sink −38.7">LULUCF 흡수 −38.7</span>
+            <span class="stat-k" data-ko="순배출량 (2025 잠정 · 흡수원 반영)" data-en="Net emissions (2025 prov., incl. LULUCF)">순배출량 (2025 잠정 · 흡수원 반영)</span>
+            <span class="stat-v">654.7<span class="stat-u"> MtCO₂eq</span></span>
+            <span class="stat-n" data-ko="LULUCF 흡수 −31.0 (경북 산불로 −22.8%)" data-en="LULUCF sink −31.0 (−22.8% after the Gyeongbuk wildfires)">LULUCF 흡수 −31.0 (경북 산불로 −22.8%)</span>
           </div>
           <div class="stat">
-            <span class="stat-k" data-ko="1인당 배출량" data-en="Per capita">1인당 배출량</span>
-            <span class="stat-v">12.1<span class="stat-u"> tCO₂eq</span></span>
-            <span class="stat-n" data-ko="OECD 상위권" data-en="Upper tier among OECD">OECD 상위권</span>
+            <span class="stat-k" data-ko="1인당 배출량 (2024 확정)" data-en="Per capita (2024 final)">1인당 배출량 (2024 확정)</span>
+            <span class="stat-v">13.4<span class="stat-u"> tCO₂eq</span></span>
+            <span class="stat-n" data-ko="2023년 대비 −2.0%" data-en="−2.0% vs 2023">2023년 대비 −2.0%</span>
           </div>
           <div class="stat">
             <span class="stat-k" data-ko="2030 목표까지 남은 감축" data-en="Gap to 2030 target">2030 목표까지 남은 감축</span>
-            <span class="stat-v amber">187.6<span class="stat-u"> MtCO₂eq</span></span>
-            <span class="stat-n" data-ko="연평균 −4.2% 필요" data-en="requires −4.2%/yr">연평균 −4.2% 필요</span>
+            <span class="stat-v amber">149.0<span class="stat-u"> MtCO₂eq</span></span>
+            <span class="stat-n" data-ko="정부 발표 · 2025 잠정치 기준" data-en="Government figure · from 2025 provisional">정부 발표 · 2025 잠정치 기준</span>
           </div>
+        </div>
+
+        <div class="live-strip" aria-live="off">
+          <div class="live-h"><i class="live-dot" aria-hidden="true"></i><span data-ko="지금 이 순간 — 실시간 추정" data-en="Right now — live estimate">지금 이 순간 — 실시간 추정</span><span class="live-clock num" id="liveClock">—</span></div>
+          <div class="live-cells">
+            <div class="live-c"><span class="live-k live-year-k" data-ko="올해 누적 국가 배출" data-en="National emissions so far this year">올해 누적 국가 배출</span><b class="num live-ytd">—</b><span class="live-u">tCO₂eq</span></div>
+            <div class="live-c"><span class="live-k" data-ko="오늘 0시 이후 배출" data-en="Emitted since midnight">오늘 0시 이후 배출</span><b class="num" id="liveToday">—</b><span class="live-u">tCO₂eq</span></div>
+            <div class="live-c"><span class="live-k" data-ko="2030 목표 경로 대비 초과분 (올해)" data-en="Above the 2030 pathway (this year)">2030 목표 경로 대비 초과분 (올해)</span><b class="num amber" id="liveOver">—</b><span class="live-u">tCO₂eq</span></div>
+            <div class="live-c"><span class="live-k" data-ko="전력 탄소집약도" data-en="Grid carbon intensity">전력 탄소집약도</span><b class="num" id="liveCI">—</b><span class="live-u" id="liveCISrc">gCO₂/kWh</span></div>
+          </div>
+          <p class="src live-note" data-ko="누적치는 최신 연간 배출량(2025 잠정 685.71 Mt)을 초 단위로 나눈 값을 한국 표준시 현재 시각에 맞춰 매초 갱신한 추정치입니다 — 센서 실측이 아닙니다. 목표 경로는 2025 잠정치에서 2030년까지 정부 발표 잔여 감축량(1억 4,900만 톤)을 매년 같은 비율로 줄인다고 가정한 값입니다. 전력 탄소집약도는 실시간 API가 연결되면 5분마다 갱신되며, 연결되지 않으면 국가 전력 배출계수(2023년, 0.4173 tCO₂eq/MWh)를 표시합니다." data-en="Running totals divide the latest annual total (2025 provisional, 685.71 Mt) into seconds and update every second against the current time in KST — an estimate, not a sensor reading. The pathway assumes the government's remaining 149 Mt cut to 2030 is made at an even yearly rate from the 2025 level. Grid intensity refreshes every five minutes when a live API is connected; otherwise it shows the national grid factor (2023, 0.4173 tCO₂eq/MWh).">누적치는 최신 연간 배출량(2025 잠정 685.71 Mt)을 초 단위로 나눈 값을 한국 표준시 현재 시각에 맞춰 매초 갱신한 추정치입니다 — 센서 실측이 아닙니다. 목표 경로는 2025 잠정치에서 2030년까지 정부 발표 잔여 감축량(1억 4,900만 톤)을 매년 같은 비율로 줄인다고 가정한 값입니다. 전력 탄소집약도는 실시간 API가 연결되면 5분마다 갱신되며, 연결되지 않으면 국가 전력 배출계수(2023년, 0.4173 tCO₂eq/MWh)를 표시합니다.</p>
         </div>
 
         <div class="pane">
           <div class="pane-h">
             <div>
               <div class="pane-t" data-ko="국가 온실가스 총배출량 추이 및 감축 목표" data-en="National GHG emissions and reduction targets">국가 온실가스 총배출량 추이 및 감축 목표</div>
-              <div class="pane-s">1990–2023 · MtCO₂eq · NDC 2030 / 2035 / Net-Zero 2050</div>
+              <div class="pane-s">1990–2025 · MtCO₂eq · 2006 IPCC · NDC 2030 / 2035 / Net-Zero 2050</div>
             </div>
             <div class="row" id="trendToggle"></div>
           </div>
@@ -1250,11 +1277,11 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
         <div class="split">
           <div class="pane">
-            <div class="pane-h"><div><div class="pane-t" data-ko="분야별 배출 구성" data-en="Emissions by sector">분야별 배출 구성</div><div class="pane-s">2022 · MtCO₂eq</div></div></div>
+            <div class="pane-h"><div><div class="pane-t" data-ko="분야별 배출 구성" data-en="Emissions by sector">분야별 배출 구성</div><div class="pane-s">2024 · MtCO₂eq</div></div></div>
             <div class="pane-b"><div id="sectorChart"></div></div>
           </div>
           <div class="pane">
-            <div class="pane-h"><div><div class="pane-t" data-ko="에너지 부문 세부 배출" data-en="Inside the energy sector">에너지 부문 세부 배출</div><div class="pane-s">2022 · MtCO₂eq · 87.2% <span data-ko="비중" data-en="of total">비중</span></div></div></div>
+            <div class="pane-h"><div><div class="pane-t" data-ko="에너지 부문 세부 배출" data-en="Inside the energy sector">에너지 부문 세부 배출</div><div class="pane-s">2024 · MtCO₂eq · 76.3% <span data-ko="비중" data-en="of total">비중</span></div></div></div>
             <div class="pane-b"><div id="energyChart"></div></div>
           </div>
         </div>
@@ -1273,8 +1300,8 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
         </div>
 
         <p class="src">
-          <span data-ko="출처 — 온실가스종합정보센터(GIR) 국가 온실가스 인벤토리, 환경부 2050 탄소중립녹색성장위원회 NDC, 전력거래소 전력통계. 2023년은 잠정치이며, 지역 인벤토리는 국가 인벤토리와 산정 경계가 달라 시도 합계가 국가 총배출량과 일치하지 않습니다." data-en="Sources — Greenhouse Gas Inventory & Research Center (GIR) national inventory; Ministry of Environment / 2050 Carbon Neutrality Commission NDC; KPX electricity statistics. 2023 figures are provisional. Regional inventories use different boundaries from the national inventory, so provincial totals do not sum to the national figure.">출처 — 온실가스종합정보센터(GIR) 국가 온실가스 인벤토리, 환경부 2050 탄소중립녹색성장위원회 NDC, 전력거래소 전력통계. 2023년은 잠정치이며, 지역 인벤토리는 국가 인벤토리와 산정 경계가 달라 시도 합계가 국가 총배출량과 일치하지 않습니다.</span><br>
-          <span data-ko="본 콘솔은 공개 통계의 정적 스냅샷을 사용합니다 — 실시간 연동이 아닙니다." data-en="This console uses a static snapshot of published statistics — it is not a live feed.">본 콘솔은 공개 통계의 정적 스냅샷을 사용합니다 — 실시간 연동이 아닙니다.</span>
+          <span data-ko="출처 — 온실가스종합정보센터(GIR) 2026년 국가 온실가스 인벤토리(1990–2024, 2006 IPCC 지침, 2026.10.30 공표), 기후에너지환경부 2025년도 국가 온실가스 잠정배출량(2026.9.20), 2050 탄소중립녹색성장위원회 2035 NDC(2025.11), 국가 전력배출계수(2023년도, 2025.12 공표). 2006 지침 전환으로 과거 연도 값이 이전 1996 지침 수치보다 높게 재산정되었습니다. 추이 그래프는 공표 요약에 수록된 연도만 연결했습니다." data-en="Sources — GIR 2026 National GHG Inventory (1990–2024, 2006 IPCC Guidelines, published 30 Oct 2026); MCEE 2025 provisional emissions (20 Sep 2026); Carbon Neutrality Commission 2035 NDC (Nov 2025); national grid emission factor (2023, published Dec 2025). The move to the 2006 Guidelines restated every past year higher than the earlier 1996-basis figures. The trend chart joins only the years printed in the published summary.">출처 — 온실가스종합정보센터(GIR) 2026년 국가 온실가스 인벤토리(1990–2024, 2006 IPCC 지침, 2026.10.30 공표), 기후에너지환경부 2025년도 국가 온실가스 잠정배출량(2026.9.20), 2050 탄소중립녹색성장위원회 2035 NDC(2025.11), 국가 전력배출계수(2023년도, 2025.12 공표). 2006 지침 전환으로 과거 연도 값이 이전 1996 지침 수치보다 높게 재산정되었습니다. 추이 그래프는 공표 요약에 수록된 연도만 연결했습니다.</span><br>
+          <span data-ko="시도별 배출량과 전력자급률은 최신 공표값을 확인하지 못해 기존 지역 인벤토리 값을 유지합니다. 지역 인벤토리는 국가 인벤토리와 산정 경계가 달라 시도 합계가 국가 총배출량과 일치하지 않습니다." data-en="Provincial emissions and self-sufficiency keep the earlier regional-inventory values, as no newer published figures were found. Regional inventories use different boundaries, so provincial totals do not sum to the national figure.">시도별 배출량과 전력자급률은 최신 공표값을 확인하지 못해 기존 지역 인벤토리 값을 유지합니다. 지역 인벤토리는 국가 인벤토리와 산정 경계가 달라 시도 합계가 국가 총배출량과 일치하지 않습니다.</span>
         </p>
       </div>
 
@@ -1327,8 +1354,8 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
           <div class="pane-b">
             <p class="src">
-              <span data-ko="장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다." data-en="The scene renders annual statistics converted to a per-second rate in real time — it is not a live sensor stream. 152 TWh of net interregional flow per year is 4.82 MWh per second; at Korea's 2022 grid factor of 0.4594 tCO₂/MWh, roughly 2.21 tCO₂ moves to consuming regions every second. Over the same period the country as a whole emits 19.79 tCO₂eq per second.">장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2022년 국가 전력 배출계수 0.4594 tCO₂/MWh를 적용하면 초당 약 2.21 tCO₂가 소비지로 이동합니다. 같은 시간 대한민국 전체는 초당 19.79 tCO₂eq를 배출합니다.</span><br>
-              <span data-ko="시도 위치는 실제 위경도 좌표를 사용하며, 밀집도와 기둥 높이는 시도별 배출량입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다." data-en="Provincial positions use real latitude and longitude; density and column height are the provincial inventory. The two circles are the radii around the emission-weighted centroid containing 50% and 100% of the national inventory. The coastline is a simplified outline, and the background grain is a compositional ground carrying no quantity.">시도 위치는 실제 위경도 좌표를 사용하며, 밀집도와 기둥 높이는 시도별 배출량입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다.</span>
+              <span data-ko="장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2023년 국가 전력 배출계수 0.4173 tCO₂eq/MWh를 적용하면 초당 약 2.01 tCO₂가 소비지로 이동합니다(실시간 전력 탄소집약도 API가 연결되면 그 값을 사용). 같은 시간 대한민국 전체는 초당 21.74 tCO₂eq를 배출합니다(2025 잠정 685.71 Mt 기준)." data-en="The scene renders annual statistics converted to a per-second rate in real time — it is not a live sensor stream. 152 TWh of net interregional flow per year is 4.82 MWh per second; at Korea's 2023 grid factor of 0.4173 tCO₂eq/MWh, roughly 2.01 tCO₂ moves to consuming regions every second (a live grid-intensity API replaces this factor when connected). Over the same period the country as a whole emits 21.74 tCO₂eq per second (2025 provisional, 685.71 Mt).">장면은 연간 통계를 초 단위 속도로 환산해 실시간으로 렌더링합니다 — 센서 실측 스트림이 아닙니다. 지역 간 순이동 전력 연 152 TWh는 초당 4.82 MWh, 2023년 국가 전력 배출계수 0.4173 tCO₂eq/MWh를 적용하면 초당 약 2.01 tCO₂가 소비지로 이동합니다(실시간 전력 탄소집약도 API가 연결되면 그 값을 사용). 같은 시간 대한민국 전체는 초당 21.74 tCO₂eq를 배출합니다(2025 잠정 685.71 Mt 기준).</span><br>
+              <span data-ko="시도 위치는 실제 위경도 좌표를 사용하며, 지면에 깔린 점의 밀집도가 시도별 배출량입니다. 시도 사이를 잇는 필라멘트가 송전 경로이고, 그 위를 움직이는 입자가 전력에 실린 탄소입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다." data-en="Provincial positions use real latitude and longitude; the density of points on the ground is the provincial inventory. Filaments between provinces are transmission paths, and the points travelling along them are the carbon carried by the electricity. The two circles are the radii around the emission-weighted centroid containing 50% and 100% of the national inventory. The coastline is a simplified outline, and the background grain is a compositional ground carrying no quantity.">시도 위치는 실제 위경도 좌표를 사용하며, 지면에 깔린 점의 밀집도가 시도별 배출량입니다. 시도 사이를 잇는 필라멘트가 송전 경로이고, 그 위를 움직이는 입자가 전력에 실린 탄소입니다. 두 개의 원은 배출 가중 중심을 기준으로 각각 국가 배출의 50%와 100%가 포함되는 반경입니다. 해안선은 간략화된 윤곽이고, 배경 그레인은 조형 요소로 아무 수치도 나타내지 않습니다.</span>
             </p>
           </div>
         </div>
@@ -1336,7 +1363,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
         <div class="pane">
           <div class="pane-h">
             <div><div class="pane-t" data-ko="탄소의 이동 경로 — 1차 에너지에서 최종 배출까지" data-en="Carbon pathways — primary energy to final emission">탄소의 이동 경로 — 1차 에너지에서 최종 배출까지</div>
-            <div class="pane-s" data-ko="2022 · MtCO₂eq · 흐름 위에 마우스를 올리면 경로가 강조됩니다" data-en="2022 · MtCO₂eq · hover a flow to trace its path">2022 · MtCO₂eq · 흐름 위에 마우스를 올리면 경로가 강조됩니다</div></div>
+            <div class="pane-s" data-ko="2024 확정 · MtCO₂eq · 흐름 위에 마우스를 올리면 경로가 강조됩니다" data-en="2024 final · MtCO₂eq · hover a flow to trace its path">2024 확정 · MtCO₂eq · 흐름 위에 마우스를 올리면 경로가 강조됩니다</div></div>
           </div>
           <div class="pane-b"><div class="chart-scroll"><div id="sankey"></div></div></div>
         </div>
@@ -1347,7 +1374,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
             <div class="pane-b"><div id="selfSuff"></div></div>
           </div>
           <div class="pane">
-            <div class="pane-h"><div><div class="pane-t" data-ko="수송 부문 이동 배출 구성" data-en="Emissions from moving things">수송 부문 이동 배출 구성</div><div class="pane-s">2022 · 97.0 MtCO₂eq</div></div></div>
+            <div class="pane-h"><div><div class="pane-t" data-ko="부문별 배출과 전년 대비 증감" data-en="Emissions by sector, year on year">부문별 배출과 전년 대비 증감</div><div class="pane-s" data-ko="2025 잠정 · NDC 부문 · MtCO₂eq" data-en="2025 provisional · NDC sectors · MtCO₂eq">2025 잠정 · NDC 부문 · MtCO₂eq</div></div></div>
             <div class="pane-b"><div id="transportChart"></div></div>
           </div>
         </div>
@@ -1454,7 +1481,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
             <div class="pane-s">KAU26 · SGP-CREDIT · <span data-ko="시뮬레이션 시장" data-en="simulated market">시뮬레이션 시장</span></div></div>
             <div class="row">
               <span class="mono-k" data-ko="현재가" data-en="Last">현재가</span>
-              <span class="num" style="font-size:19px; font-weight:600" id="lastPx">₩8,900</span>
+              <span class="num" style="font-size:19px; font-weight:600" id="lastPx">₩26,000</span>
               <span class="delta" id="lastDelta">+0.0%</span>
             </div>
           </div>
@@ -1481,7 +1508,7 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
                     </div>
                     <div class="field" style="flex:1">
                       <label data-ko="지정가 (₩)" data-en="Limit (₩)">지정가 (₩)</label>
-                      <input class="inp mono" id="ordPx" type="number" min="1" step="10" value="8900">
+                      <input class="inp mono" id="ordPx" type="number" min="1" step="10" value="26000">
                     </div>
                   </div>
                   <button class="btn btn-p" type="submit" id="ordBtn" data-ko="주문 제출" data-en="Submit order">주문 제출</button>
@@ -1603,6 +1630,13 @@ input[type=range]::-moz-range-thumb{width:15px; height:15px; border-radius:50%; 
 
 <div class="tipbox" id="tip" role="status" aria-live="polite"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* Live data hook. Paste an Electricity Maps API token (zone KR) to show live
+   grid carbon intensity, or set ciEndpoint to your own JSON endpoint that
+   returns { "carbonIntensity": <gCO2eq/kWh> }. Leave empty to use the
+   national grid emission factor. */
+window.SG_LIVE_CONFIG = { electricityMapsToken:"", ciEndpoint:"" };
+</script>
 <script>
 "use strict";
 /* ==========================================================================
@@ -1805,44 +1839,56 @@ $$('.subtab').forEach(function(t){ t.addEventListener('click', function(){ gotoS
    ---------------------------------------------------------------------- */
 var D = {};
 
+/* ---- latest release metadata (update here when GIR publishes) ----
+   Basis: 2006 IPCC Guidelines.
+   - Confirmed: 2026 National GHG Inventory (1990–2024), GIR, published 2026-10-30
+   - Provisional: 2025 provisional emissions, GIR / MCEE, published 2026-09-20 */
+D.meta = {
+  confirmedYear:2024, confirmedTotal:691.6, confirmedNet:646.8, confirmedSink:-44.8,
+  provYear:2025, provTotal:685.71, provNet:654.70, provSink:-31.03, provYoY:-6.1, provYoYPct:-0.9,
+  base2018:778.9, perCapita:13.4,
+  gridEF:0.4173, gridEFYear:2023     /* tCO2eq/MWh, national grid factor published 2025-12 */
+};
+
+/* Only the years published in the 2026 inventory summary are plotted
+   (2006 IPCC basis). Intermediate years are not interpolated as data. */
 D.trend = [
-  [1990,292.2],[1991,315.0],[1992,341.0],[1993,364.0],[1994,396.0],[1995,435.7],
-  [1996,465.0],[1997,480.0],[1998,425.0],[1999,456.0],[2000,502.7],[2001,522.0],
-  [2002,543.0],[2003,549.0],[2004,559.0],[2005,562.2],[2006,570.0],[2007,588.0],
-  [2008,596.0],[2009,604.0],[2010,656.2],[2011,683.0],[2012,687.0],[2013,696.0],
-  [2014,691.0],[2015,692.5],[2016,693.0],[2017,709.1],[2018,727.6],[2019,701.4],
-  [2020,656.3],[2021,676.8],[2022,654.5],[2023,624.2]
+  [1990,309.6],[2000,537.1],[2010,688.1],[2018,778.9],[2022,721.4],[2023,705.1],[2024,691.6]
 ];
+D.trendProv = [2025, 685.7];
 D.targets = [
-  { y:2030, v:436.6, l:{ ko:'2030 NDC · 2018년 대비 −40%', en:'2030 NDC · −40% vs 2018' } },
-  { y:2035, v:327.4, l:{ ko:'2035 NDC · 2018년 대비 −50~60% (중간값)', en:'2035 NDC · −50 to −60% vs 2018 (midpoint)' } },
+  { y:2030, v:467.3, l:{ ko:'2030 NDC · 2018년 대비 −40% (2006 지침 2018년 총배출량 778.9 기준 환산. 공식 목표치 436.6은 1996 지침 기준)', en:'2030 NDC · −40% vs 2018 (converted on the 2006-basis 2018 total of 778.9; the official 436.6 figure is on the 1996 basis)' } },
+  { y:2035, v:334.9, l:{ ko:'2035 NDC · 2018년 대비 −53~61% (중간값 환산. 공식: 순배출 2억8,950만~3억4,890만 톤)', en:'2035 NDC · −53 to −61% vs 2018 (midpoint, converted; official: 289.5–348.9 Mt net)' } },
   { y:2050, v:0,     l:{ ko:'2050 탄소중립 (Net-Zero)', en:'2050 carbon neutrality (net zero)' } }
 ];
 
 D.sectors = [
-  { l:{ ko:'에너지', en:'Energy' },            v:570.8, p:87.2, c:'--s1' },
-  { l:{ ko:'산업공정', en:'Industrial process' }, v:45.4,  p:6.9,  c:'--s2' },
-  { l:{ ko:'농업', en:'Agriculture' },          v:21.0,  p:3.2,  c:'--s3' },
-  { l:{ ko:'폐기물', en:'Waste' },              v:17.3,  p:2.6,  c:'--s4' }
+  { l:{ ko:'에너지', en:'Energy' },            v:527.9, p:76.3, c:'--s1' },
+  { l:{ ko:'산업공정', en:'Industrial process' }, v:123.3, p:17.8, c:'--s2' },
+  { l:{ ko:'농업', en:'Agriculture' },          v:22.0,  p:3.2,  c:'--s3' },
+  { l:{ ko:'폐기물', en:'Waste' },              v:18.4,  p:2.7,  c:'--s4' }
+];
+
+/* 2025 provisional, by NDC sector (MCEE release, 2026-09-20) */
+D.ndcSectors = [
+  { l:{ ko:'산업', en:'Industry' },               v:242.93, ch:-2.1 },
+  { l:{ ko:'전력', en:'Power' },                  v:220.43, ch:+0.2 },
+  { l:{ ko:'수송', en:'Transport' },              v:94.59,  ch:-2.9 },
+  { l:{ ko:'건물', en:'Buildings' },              v:45.00,  ch:+3.3 },
+  { l:{ ko:'냉매 등 불소계', en:'F-gases (refrigerants)' }, v:36.28, ch:+3.9 },
+  { l:{ ko:'농축수산', en:'Agri., livestock, fisheries' }, v:25.25, ch:-3.1 },
+  { l:{ ko:'폐기물', en:'Waste' },                v:18.05,  ch:-1.8 }
 ];
 
 /* one-hue ordinal ramp (blue 250→600) for breakdowns inside a single sector */
 var RAMP = ['#86b6ef','#5598e7','#3987e5','#256abf','#184f95'];
 
 D.energy = [
-  { l:{ ko:'전환 — 공공 전기·열 생산', en:'Power & heat generation' }, v:213.0 },
-  { l:{ ko:'산업 — 제조업·건설업', en:'Manufacturing & construction' }, v:180.0 },
-  { l:{ ko:'수송', en:'Transport' }, v:97.0 },
-  { l:{ ko:'건물 — 가정·상업·공공', en:'Buildings — residential & commercial' }, v:47.0 },
-  { l:{ ko:'기타 — 탈루 등', en:'Other — fugitive emissions' }, v:33.8 }
-];
-
-D.transport = [
-  { l:{ ko:'도로', en:'Road' }, v:92.0 },
-  { l:{ ko:'해운', en:'Maritime' }, v:2.4 },
-  { l:{ ko:'항공', en:'Aviation' }, v:1.4 },
-  { l:{ ko:'기타 수송', en:'Other transport' }, v:0.8 },
-  { l:{ ko:'철도', en:'Rail' }, v:0.4 }
+  { l:{ ko:'에너지산업 — 전기·열 생산', en:'Energy industries — power & heat' }, v:237.3 },
+  { l:{ ko:'제조업·건설업', en:'Manufacturing & construction' }, v:142.8 },
+  { l:{ ko:'수송', en:'Transport' }, v:97.4 },
+  { l:{ ko:'기타 — 가정·상업·공공 등', en:'Other — residential, commercial, public' }, v:44.3 },
+  { l:{ ko:'탈루·미분류', en:'Fugitive & unspecified' }, v:6.1 }
 ];
 
 /* 17 provinces — schematic tile cartogram (col,row); not true geography */
@@ -1895,37 +1941,40 @@ D.fund = [
 
 /* Sankey — three stages. Stage 2→3 redistributes power-sector emissions to
    the end uses that consumed the electricity (estimated by consumption share). */
+/* 2024 confirmed inventory. Power is redistributed with the same
+   consumption shares as before (industry 53%, commercial 22%, residential 14%,
+   transport 2%, other 9%); buildings split 55:45 commercial:residential. */
 D.sankey = {
   cols: [
-    [ { k:'ene', l:{ ko:'에너지', en:'Energy' }, v:570.8, c:'--s1' },
-      { k:'ipr', l:{ ko:'산업공정', en:'Industrial process' }, v:45.4, c:'--s2' },
-      { k:'agr', l:{ ko:'농업', en:'Agriculture' }, v:21.0, c:'--s3' },
-      { k:'wst', l:{ ko:'폐기물', en:'Waste' }, v:17.3, c:'--s4' } ],
-    [ { k:'pow', l:{ ko:'전환(발전)', en:'Power generation' }, v:213.0, c:'--s1' },
-      { k:'ind', l:{ ko:'산업', en:'Industry' }, v:180.0, c:'--s1' },
-      { k:'tra', l:{ ko:'수송', en:'Transport' }, v:97.0, c:'--s1' },
-      { k:'bld', l:{ ko:'건물', en:'Buildings' }, v:47.0, c:'--s1' },
-      { k:'oth', l:{ ko:'기타(탈루)', en:'Other (fugitive)' }, v:33.8, c:'--s1' },
-      { k:'ipr2',l:{ ko:'산업공정', en:'Industrial process' }, v:45.4, c:'--s2' },
-      { k:'agr2',l:{ ko:'농업', en:'Agriculture' }, v:21.0, c:'--s3' },
-      { k:'wst2',l:{ ko:'폐기물', en:'Waste' }, v:17.3, c:'--s4' } ],
-    [ { k:'f_ind', l:{ ko:'산업 최종 귀속', en:'Industry (final)' }, v:338.3, c:'--s1' },
-      { k:'f_tra', l:{ ko:'수송 최종 귀속', en:'Transport (final)' }, v:101.3, c:'--s1' },
-      { k:'f_com', l:{ ko:'상업·공공', en:'Commercial & public' }, v:72.9, c:'--s1' },
-      { k:'f_hom', l:{ ko:'가정', en:'Residential' }, v:50.8, c:'--s1' },
-      { k:'f_oth', l:{ ko:'기타·탈루', en:'Other & fugitive' }, v:52.9, c:'--s1' },
-      { k:'f_awa', l:{ ko:'농림·폐기물', en:'Agriculture & waste' }, v:38.3, c:'--s3' } ]
+    [ { k:'ene', l:{ ko:'에너지', en:'Energy' }, v:527.9, c:'--s1' },
+      { k:'ipr', l:{ ko:'산업공정', en:'Industrial process' }, v:123.3, c:'--s2' },
+      { k:'agr', l:{ ko:'농업', en:'Agriculture' }, v:22.0, c:'--s3' },
+      { k:'wst', l:{ ko:'폐기물', en:'Waste' }, v:18.4, c:'--s4' } ],
+    [ { k:'pow', l:{ ko:'전환(발전)', en:'Power generation' }, v:237.3, c:'--s1' },
+      { k:'ind', l:{ ko:'산업', en:'Industry' }, v:142.8, c:'--s1' },
+      { k:'tra', l:{ ko:'수송', en:'Transport' }, v:97.4, c:'--s1' },
+      { k:'bld', l:{ ko:'건물', en:'Buildings' }, v:44.3, c:'--s1' },
+      { k:'oth', l:{ ko:'기타(탈루)', en:'Other (fugitive)' }, v:6.1, c:'--s1' },
+      { k:'ipr2',l:{ ko:'산업공정', en:'Industrial process' }, v:123.3, c:'--s2' },
+      { k:'agr2',l:{ ko:'농업', en:'Agriculture' }, v:22.0, c:'--s3' },
+      { k:'wst2',l:{ ko:'폐기물', en:'Waste' }, v:18.4, c:'--s4' } ],
+    [ { k:'f_ind', l:{ ko:'산업 최종 귀속', en:'Industry (final)' }, v:391.9, c:'--s1' },
+      { k:'f_tra', l:{ ko:'수송 최종 귀속', en:'Transport (final)' }, v:102.1, c:'--s1' },
+      { k:'f_com', l:{ ko:'상업·공공', en:'Commercial & public' }, v:76.7, c:'--s1' },
+      { k:'f_hom', l:{ ko:'가정', en:'Residential' }, v:53.0, c:'--s1' },
+      { k:'f_oth', l:{ ko:'기타·탈루', en:'Other & fugitive' }, v:27.5, c:'--s1' },
+      { k:'f_awa', l:{ ko:'농림·폐기물', en:'Agriculture & waste' }, v:40.4, c:'--s3' } ]
   ],
   links: [
-    { s:'ene', t:'pow', v:213.0 }, { s:'ene', t:'ind', v:180.0 }, { s:'ene', t:'tra', v:97.0 },
-    { s:'ene', t:'bld', v:47.0 }, { s:'ene', t:'oth', v:33.8 },
-    { s:'ipr', t:'ipr2', v:45.4 }, { s:'agr', t:'agr2', v:21.0 }, { s:'wst', t:'wst2', v:17.3 },
-    { s:'pow', t:'f_ind', v:112.9 }, { s:'pow', t:'f_com', v:46.9 }, { s:'pow', t:'f_hom', v:29.8 },
-    { s:'pow', t:'f_tra', v:4.3 }, { s:'pow', t:'f_oth', v:19.1 },
-    { s:'ind', t:'f_ind', v:180.0 }, { s:'tra', t:'f_tra', v:97.0 },
-    { s:'bld', t:'f_com', v:26.0 }, { s:'bld', t:'f_hom', v:21.0 },
-    { s:'oth', t:'f_oth', v:33.8 }, { s:'ipr2', t:'f_ind', v:45.4 },
-    { s:'agr2', t:'f_awa', v:21.0 }, { s:'wst2', t:'f_awa', v:17.3 }
+    { s:'ene', t:'pow', v:237.3 }, { s:'ene', t:'ind', v:142.8 }, { s:'ene', t:'tra', v:97.4 },
+    { s:'ene', t:'bld', v:44.3 }, { s:'ene', t:'oth', v:6.1 },
+    { s:'ipr', t:'ipr2', v:123.3 }, { s:'agr', t:'agr2', v:22.0 }, { s:'wst', t:'wst2', v:18.4 },
+    { s:'pow', t:'f_ind', v:125.8 }, { s:'pow', t:'f_com', v:52.2 }, { s:'pow', t:'f_hom', v:33.2 },
+    { s:'pow', t:'f_tra', v:4.7 }, { s:'pow', t:'f_oth', v:21.4 },
+    { s:'ind', t:'f_ind', v:142.8 }, { s:'tra', t:'f_tra', v:97.4 },
+    { s:'bld', t:'f_com', v:24.5 }, { s:'bld', t:'f_hom', v:19.8 },
+    { s:'oth', t:'f_oth', v:6.1 }, { s:'ipr2', t:'f_ind', v:123.3 },
+    { s:'agr2', t:'f_awa', v:22.0 }, { s:'wst2', t:'f_awa', v:18.4 }
   ]
 };
 
@@ -2004,16 +2053,17 @@ function renderTrend(){
   var f = frame(host, h);
   var mL = 44, mR = 16, mT = 16, mB = 30;
   var pw = f.w - mL - mR, ph = f.h - mT - mB;
-  var x0 = 1990, x1 = trendShowTargets ? 2050 : 2023, yMax = 780;
+  var x0 = 1990, x1 = trendShowTargets ? 2050 : 2025, yMax = 800;
+  var BASE = D.meta.base2018;
   var X = function(y){ return mL + (y - x0) / (x1 - x0) * pw; };
   var Y = function(v){ return mT + ph - (v / yMax) * ph; };
 
-  [0,200,400,600,780].forEach(function(v){
+  [0,200,400,600,800].forEach(function(v){
     f.svg.appendChild(sv('line', { x1:mL, x2:mL + pw, y1:Y(v), y2:Y(v), class:'gridline' }));
     var t = sv('text', { x:mL - 8, y:Y(v) + 3.5, 'text-anchor':'end' });
     t.textContent = v; f.svg.appendChild(t);
   });
-  var ticks = trendShowTargets ? [1990,2000,2010,2018,2030,2040,2050] : [1990,1995,2000,2005,2010,2015,2018,2023];
+  var ticks = trendShowTargets ? [1990,2000,2010,2018,2030,2040,2050] : [1990,2000,2010,2018,2022,2025];
   ticks.forEach(function(y){
     var t = sv('text', { x:X(y), y:f.h - 10, 'text-anchor':'middle' });
     t.textContent = y; f.svg.appendChild(t);
@@ -2027,15 +2077,24 @@ function renderTrend(){
   var defs = sv('defs'); defs.appendChild(grad); f.svg.appendChild(defs);
   f.svg.appendChild(sv('path', { d:line + 'L' + pts[pts.length-1][0] + ',' + Y(0) + 'L' + pts[0][0] + ',' + Y(0) + 'Z', fill:'url(#trendGrad)' }));
   f.svg.appendChild(sv('path', { d:line, fill:'none', stroke:css('--ember'), 'stroke-width':2, 'stroke-linejoin':'round' }));
+  /* every plotted year is a published value — mark each one */
+  D.trend.forEach(function(d){
+    f.svg.appendChild(sv('circle', { cx:X(d[0]), cy:Y(d[1]), r:2.6, fill:css('--ember') }));
+  });
+  /* latest provisional year, dashed and hollow */
+  var lastA = D.trend[D.trend.length - 1], pv = D.trendProv;
+  f.svg.appendChild(sv('path', { d:'M' + X(lastA[0]) + ',' + Y(lastA[1]) + 'L' + X(pv[0]) + ',' + Y(pv[1]),
+    fill:'none', stroke:css('--ember'), 'stroke-width':2, 'stroke-dasharray':'3 3' }));
+  f.svg.appendChild(sv('circle', { cx:X(pv[0]), cy:Y(pv[1]), r:3.6, fill:css('--ground'), stroke:css('--ember'), 'stroke-width':2 }));
 
   /* 2018 peak — the reference point every Korean target is measured against */
   var pk = D.trend.find(function(d){ return d[0] === 2018; });
   f.svg.appendChild(sv('circle', { cx:X(2018), cy:Y(pk[1]), r:4, fill:css('--ember'), stroke:css('--ground'), 'stroke-width':2 }));
   var pl = sv('text', { x:X(2018), y:Y(pk[1]) - 12, 'text-anchor':'middle', class:'lbl-em' });
-  pl.textContent = (LANG === 'ko' ? '정점 ' : 'peak ') + '727.6'; f.svg.appendChild(pl);
+  pl.textContent = (LANG === 'ko' ? '정점 ' : 'peak ') + fmt(pk[1], 1); f.svg.appendChild(pl);
 
   if (trendShowTargets){
-    var proj = [[2023, 624.2]].concat(D.targets.map(function(t){ return [t.y, t.v]; }));
+    var proj = [D.trendProv].concat(D.targets.map(function(t){ return [t.y, t.v]; }));
     var pd = proj.map(function(p, i){ return (i ? 'L' : 'M') + X(p[0]) + ',' + Y(p[1]); }).join('');
     f.svg.appendChild(sv('path', { d:pd, fill:'none', stroke:css('--proof'), 'stroke-width':2, 'stroke-dasharray':'5 4', 'stroke-linejoin':'round' }));
     D.targets.forEach(function(t){
@@ -2059,23 +2118,25 @@ function renderTrend(){
   overlay.addEventListener('mousemove', function(e){
     var r = f.svg.getBoundingClientRect();
     var yr = Math.round(x0 + (e.clientX - r.left - mL) / pw * (x1 - x0));
-    var d = D.trend.reduce(function(a, b){ return Math.abs(b[0] - yr) < Math.abs(a[0] - yr) ? b : a; });
+    var all = D.trend.concat([D.trendProv]);
+    var d = all.reduce(function(a, b){ return Math.abs(b[0] - yr) < Math.abs(a[0] - yr) ? b : a; });
     cross.setAttribute('x1', X(d[0])); cross.setAttribute('x2', X(d[0])); cross.setAttribute('opacity', .5);
     dot.setAttribute('cx', X(d[0])); dot.setAttribute('cy', Y(d[1])); dot.setAttribute('opacity', 1);
-    var idx = D.trend.findIndex(function(t){ return t[0] === d[0]; });
-    var rows = [{ k:L({ ko:'총배출량', en:'Total' }), v:fmt(d[1], 1) + ' Mt', c:css('--ember') }];
+    var idx = all.findIndex(function(t){ return t[0] === d[0]; });
+    var isProv = d === D.trendProv;
+    var rows = [{ k:L(isProv ? { ko:'총배출량 (잠정)', en:'Total (provisional)' } : { ko:'총배출량 (확정)', en:'Total (final)' }), v:fmt(d[1], 1) + ' Mt', c:css('--ember') }];
     if (idx > 0){
-      var ch = (d[1] - D.trend[idx-1][1]) / D.trend[idx-1][1] * 100;
-      rows.push({ k:L({ ko:'전년 대비', en:'YoY' }), v:(ch >= 0 ? '+' : '') + fmt(ch, 1) + '%' });
+      var pr = all[idx-1], ch = (d[1] - pr[1]) / pr[1] * 100;
+      rows.push({ k:L({ ko:pr[0] + '년 대비', en:'vs ' + pr[0] }), v:(ch >= 0 ? '+' : '') + fmt(ch, 1) + '%' });
     }
-    rows.push({ k:L({ ko:'2018년 대비', en:'vs 2018' }), v:fmt((d[1] - 727.6) / 727.6 * 100, 1) + '%' });
+    rows.push({ k:L({ ko:'2018년 대비', en:'vs 2018' }), v:fmt((d[1] - BASE) / BASE * 100, 1) + '%' });
     showTip(e, String(d[0]), rows);
   });
   overlay.addEventListener('mouseleave', function(){ hideTip(); cross.setAttribute('opacity', 0); dot.setAttribute('opacity', 0); });
   f.svg.appendChild(overlay);
 
   legendInto(host, [
-    { c:css('--ember'), l:{ ko:'실적 총배출량 (1990–2023)', en:'Actual emissions (1990–2023)' }, line:true },
+    { c:css('--ember'), l:{ ko:'실적 총배출량 (1990–2024 확정 · 2025 잠정)', en:'Actual emissions (1990–2024 final · 2025 provisional)' }, line:true },
     { c:css('--proof'), l:{ ko:'감축 목표 경로 (NDC · 2050 탄소중립)', en:'Target pathway (NDC · net zero 2050)' }, line:true }
   ]);
 
@@ -2098,7 +2159,7 @@ function renderSector(){
     tipK:{ ko:'배출량', en:'Emissions' }
   });
   legendInto(host, D.sectors.map(function(s){ return { c:css(s.c), l:s.l }; }));
-  var note = el('p', 'src', L({ ko:'2022년 확정치 · 총계 654.5 MtCO₂eq · 흡수원(LULUCF) 제외', en:'2022 final · total 654.5 MtCO₂eq · excludes LULUCF sinks' }));
+  var note = el('p', 'src', L({ ko:'2024년 확정치 (2026.10 공표) · 총계 691.6 MtCO₂eq · 흡수원(LULUCF −44.8) 제외', en:'2024 final (published Oct 2026) · total 691.6 MtCO₂eq · excludes LULUCF sinks (−44.8)' }));
   host.appendChild(note);
 }
 function renderEnergy(){
@@ -2117,14 +2178,20 @@ function renderEnergy(){
 function renderTransport(){
   var host = $('#transportChart');
   if (!visible(host)) return;
-  hBars(host, D.transport, {
-    unit:' Mt', dec:1, rowH:32, labelW:150,
-    color:function(d, i){ return RAMP[i % RAMP.length]; },
+  /* direction carries the meaning here: rising sectors in amber */
+  var data = D.ndcSectors.map(function(s){
+    return { l:{ ko:s.l.ko + ' ' + (s.ch > 0 ? '▲' : '▼') + Math.abs(s.ch).toFixed(1) + '%',
+                 en:s.l.en + ' ' + (s.ch > 0 ? '▲' : '▼') + Math.abs(s.ch).toFixed(1) + '%' },
+             v:s.v, up:s.ch > 0 };
+  });
+  hBars(host, data, {
+    unit:' Mt', dec:1, rowH:32, labelW:190,
+    color:function(d){ return d.up ? css('--ember') : RAMP[2]; },
     tipK:{ ko:'배출량', en:'Emissions' }
   });
   host.appendChild(el('p', 'src', L({
-    ko:'수송 배출의 94.8%가 도로에서 발생합니다. 화물·배달 차량의 전기 전환이 가장 큰 감축 여지를 가진 이유입니다.',
-    en:'94.8% of transport emissions come from roads — which is why electrifying freight and delivery fleets holds the largest single opportunity.'
+    ko:'전력(+0.2%)은 원전 정비일수 증가로 석탄 발전이 2.2% 늘며 소폭 증가했고, 건물(+3.3%)과 냉매 등 불소계(+3.9%)도 늘었습니다. 산업·수송·농축수산·폐기물은 감소했습니다. 출처 — 기후에너지환경부, 2025년도 국가 온실가스 잠정배출량(2026.9.20).',
+    en:'Power (+0.2%) edged up as more nuclear maintenance days pushed coal generation up 2.2%; buildings (+3.3%) and F-gases (+3.9%) also rose. Industry, transport, agriculture and waste fell. Source — MCEE, 2025 provisional emissions (20 Sep 2026).'
   })));
 }
 function renderEsg(){
@@ -2241,7 +2308,7 @@ function renderRegionBars(){
 function renderSankey(){
   var host = $('#sankey');
   if (!visible(host)) return;
-  var W = Math.max(host.clientWidth, 780), NW = 118, H = 440, gap = 9, TOT = 654.5;
+  var W = Math.max(host.clientWidth, 780), NW = 118, H = 440, gap = 9, TOT = 691.6;
   var colX = [0, (W - NW) / 2, W - NW];
   var maxN = 8, scale = (H - (maxN - 1) * gap) / TOT;
 
@@ -2310,8 +2377,8 @@ function renderSankey(){
   });
 
   host.appendChild(el('p', 'src', L({
-    ko:'③단계는 전환(발전) 부문의 배출 213.0 Mt를 전력을 실제로 소비한 부문으로 재배분한 추정치입니다(전력 소비 비중 기준). 이 재배분을 거치면 산업 부문의 실질 책임 배출이 180.0 Mt에서 338.3 Mt로 늘어납니다.',
-    en:'Stage ③ redistributes the 213.0 Mt from power generation to the sectors that actually consumed the electricity, estimated by consumption share. After redistribution, industry’s real footprint rises from 180.0 Mt to 338.3 Mt.'
+    ko:'③단계는 전환(발전) 부문의 배출 237.3 Mt를 전력을 실제로 소비한 부문으로 재배분한 추정치입니다(전력 소비 비중 기준). 산업 부문은 연료 연소 142.8 Mt에 산업공정 123.3 Mt와 재배분된 전력 125.8 Mt가 더해져 실질 책임 배출이 391.9 Mt로 늘어납니다.',
+    en:'Stage ③ redistributes the 237.3 Mt from power generation to the sectors that actually consumed the electricity, estimated by consumption share. Industry’s fuel combustion of 142.8 Mt, plus 123.3 Mt of process emissions and 125.8 Mt of redistributed power, gives a real footprint of 391.9 Mt.'
   })));
 }
 
@@ -2540,6 +2607,90 @@ function renderLayers(){
    Annual statistics converted to a per-second rate and rendered live.
    Not a sensor stream; the rate is stated on the panel.
    ========================================================================== */
+/* ==========================================================================
+   5a. LIVE — clock-driven running totals + optional live grid intensity
+   Totals: latest annual national emissions spread evenly over the current
+   KST year, recomputed every second from the real clock (an estimate).
+   Grid intensity: fetched every 5 min when an API is configured by setting,
+   in a script placed before this one,
+     window.SG_LIVE_CONFIG = { electricityMapsToken:'...' }
+   or { ciEndpoint:'https://...' } returning { carbonIntensity: gCO2eq/kWh }.
+   Without one, the national grid factor is shown and labelled as such.
+   ========================================================================== */
+var LIVE = (function(){
+  var cfg = window.SG_LIVE_CONFIG || {};
+  var KST = 9 * 3600e3;
+  var ANNUAL_T = D.meta.provTotal * 1e6;
+  /* 2030 pathway: the government's remaining 149 Mt cut, at an even yearly rate */
+  var PATH_R = Math.pow((D.meta.provTotal - 149.0) / D.meta.provTotal, 1 / (2030 - D.meta.provYear));
+  var live = { ci:null, at:null, err:false };
+
+  function kst(now){
+    var k = new Date(now + KST), y = k.getUTCFullYear();
+    return {
+      y:y,
+      soy:Date.UTC(y, 0, 1) - KST,
+      eoy:Date.UTC(y + 1, 0, 1) - KST,
+      sod:Date.UTC(y, k.getUTCMonth(), k.getUTCDate()) - KST,
+      hms:[k.getUTCHours(), k.getUTCMinutes(), k.getUTCSeconds()]
+    };
+  }
+  function ef(){ return live.ci != null ? live.ci / 1000 : D.meta.gridEF; }
+  function setAll(sel, txt){ $$(sel).forEach(function(n){ n.textContent = txt; }); }
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function tick(){
+    var now = Date.now(), t = kst(now);
+    var yearSec = (t.eoy - t.soy) / 1000, rate = ANNUAL_T / yearSec;     /* t per second */
+    var ytd = rate * (now - t.soy) / 1000, today = rate * (now - t.sod) / 1000;
+    var pathAnnual = ANNUAL_T * Math.pow(PATH_R, Math.max(0, t.y - D.meta.provYear));
+    var over = Math.max(0, (ANNUAL_T - pathAnnual) / yearSec * (now - t.soy) / 1000);
+
+    setAll('.live-ytd', fmt(Math.floor(ytd)));
+    var td = $('#liveToday'); if (td) td.textContent = fmt(Math.floor(today));
+    var ov = $('#liveOver'); if (ov) ov.textContent = fmt(Math.floor(over));
+    var ck = $('#liveClock');
+    if (ck) ck.textContent = t.y + '.' + pad(new Date(now + KST).getUTCMonth() + 1) + '.' +
+      pad(new Date(now + KST).getUTCDate()) + ' ' + pad(t.hms[0]) + ':' + pad(t.hms[1]) + ':' + pad(t.hms[2]) + ' KST';
+
+    var ci = $('#liveCI'), cs = $('#liveCISrc');
+    if (ci){
+      ci.textContent = fmt(ef() * 1000, 0);
+      if (cs) cs.textContent = live.ci != null
+        ? 'gCO₂eq/kWh · ' + L({ ko:'실시간', en:'live' }) + ' ' + (live.at ? new Date(live.at).toLocaleTimeString(LANG === 'ko' ? 'ko-KR' : 'en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Asia/Seoul' }) : '')
+        : 'gCO₂eq/kWh · ' + L(live.err
+            ? { ko:'API 연결 실패 — 국가 배출계수(' + D.meta.gridEFYear + ')', en:'API failed — national factor (' + D.meta.gridEFYear + ')' }
+            : { ko:'국가 배출계수(' + D.meta.gridEFYear + ') · 실시간 API 미연결', en:'national factor (' + D.meta.gridEFYear + ') · no live API' });
+    }
+  }
+
+  function fetchCI(){
+    var url, opts = {};
+    if (cfg.ciEndpoint){ url = cfg.ciEndpoint; }
+    else if (cfg.electricityMapsToken){
+      url = 'https://api.electricitymap.org/v3/carbon-intensity/latest?zone=KR';
+      opts.headers = { 'auth-token':cfg.electricityMapsToken };
+    } else return;
+    fetch(url, opts).then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function(j){
+        var v = Number(j.carbonIntensity);
+        if (!isFinite(v) || v <= 0 || v > 2000) throw new Error('bad value');
+        live.ci = v; live.at = j.datetime ? Date.parse(j.datetime) : Date.now(); live.err = false;
+        tick();
+      })
+      .catch(function(err){
+        live.err = true;
+        if (window.console) console.warn('Live grid intensity unavailable:', err);
+      });
+  }
+
+  tick();
+  setInterval(tick, 1000);
+  fetchCI();
+  setInterval(fetchCI, 5 * 60 * 1000);
+  return { ef:ef, tick:tick };
+})();
+
 var C3D = (function(){
   var THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
@@ -2569,9 +2720,10 @@ var C3D = (function(){
 
   /* annual figures → per-second rates (printed under the stage) */
   var MWH_PER_SEC = 152e6 / 31536000;      /* 152 TWh of net interregional flow */
-  var GRID_EF = 0.4594;                     /* tCO2 per MWh, Korea 2022 */
-  var CARBON_PER_SEC = MWH_PER_SEC * GRID_EF;
-  var NATIONAL_PER_SEC = 624.2e6 / 31536000;
+  /* tCO2 per MWh: live grid intensity when connected, else the 2023 national factor */
+  function gridEF(){ return LIVE.ef(); }
+  var NATIONAL_PER_SEC = D.meta.provTotal * 1e6 / 31536000;
+  var carbonAcc = 0;
 
   var K = 18, COSLAT = Math.cos(36 * Math.PI / 180);
   function px(lon){ return (lon - 127.8) * COSLAT * K; }
@@ -2580,7 +2732,7 @@ var C3D = (function(){
   var loading = null, ready = false, failed = false;
   var renderer, scene, camera, raf = 0, lastFrame = 0;
   var curves = [], labelEls = [], hoverTargets = [];
-  var fieldPts, flowPts, flowData, risePts, riseData, groupRoot;
+  var fieldPts, flowPts, flowData, groupRoot;
   var reticle = { x:0, z:0, r:0, km:0 };
   var view = { theta:0.16, phi:0.42, r:186, tTheta:0.16, tPhi:0.42, tR:186 };
   var st = { playing:true, speed:1, elapsed:0, auto:true, dragging:false };
@@ -2647,24 +2799,27 @@ var C3D = (function(){
     D.regions.forEach(function(r){
       var g = GEO[r.k]; if (!g) return;
       r._x = px(g[0]); r._z = pz(g[1]);
-      r._h = 5 + (r.v / MAXV) * 46;
-      r._spread = 2.6 + Math.sqrt(r.v / MAXV) * 7.5;
+      /* no columns: every cluster lies flat on the ground plane; emissions
+         are carried by density and footprint alone */
+      r._h = 2.2;
+      r._spread = 3.2 + Math.sqrt(r.v / MAXV) * 9.5;
       byKey[r.k] = r;
     });
     D.powerFlows.forEach(function(fl){
       var a = byKey[fl.from], b = byKey[fl.to];
       if (!a || !b) return;
-      var v0 = new THREE.Vector3(a._x, a._h * .42, a._z);
-      var v1 = new THREE.Vector3(b._x, b._h * .42, b._z);
+      /* filaments leave and land on the ground, arching only between provinces */
+      var v0 = new THREE.Vector3(a._x, 0.8, a._z);
+      var v1 = new THREE.Vector3(b._x, 0.8, b._z);
       var mid = v0.clone().add(v1).multiplyScalar(.5);
-      mid.y += v0.distanceTo(v1) * 0.24 + 5;
+      mid.y += v0.distanceTo(v1) * 0.18 + 2;
       curves.push({ curve:new THREE.QuadraticBezierCurve3(v0, mid, v1), v:fl.v, flow:fl, a:a, b:b });
     });
 
     /* ---------- the field: one static cloud, never rewritten ---------- */
     var TOTAL = small ? 62000 : 210000;
-    var nCluster = Math.round(TOTAL * 0.34);
-    var nFilament = Math.round(TOTAL * 0.20);
+    var nCluster = Math.round(TOTAL * 0.24);
+    var nFilament = Math.round(TOTAL * 0.30);   /* the connections carry the scene */
     var nNoise = TOTAL - nCluster - nFilament;
 
     var pos = new Float32Array(TOTAL * 3), col = new Float32Array(TOTAL * 3);
@@ -2675,7 +2830,7 @@ var C3D = (function(){
       k++;
     }
 
-    /* clusters — density and column height both carry the inventory */
+    /* clusters — flat discs; density carries the inventory */
     var totV = D.regions.reduce(function(a, r){ return a + r.v; }, 0);
     D.regions.forEach(function(r){
       if (r._x == null) return;
@@ -2683,12 +2838,12 @@ var C3D = (function(){
       for (var i = 0; i < n; i++){
         var ang = Math.random() * 6.2832;
         var d = r._spread * Math.pow(Math.random(), 1.6);      /* dense core */
-        var y = r._h * Math.pow(Math.random(), 2.3);            /* thins upward */
+        var y = r._h * Math.random();                           /* a thin layer, no column */
         var core = 1 - d / r._spread;
         /* alpha stays low: brightness is earned by how many points overlap,
            not by making each one bright, or the cores clip to flat white */
         put(r._x + Math.cos(ang) * d, y, r._z + Math.sin(ang) * d,
-            0.04 + core * 0.17 * (1 - y / r._h) + Math.random() * 0.07);
+            0.035 + core * 0.15 + Math.random() * 0.06);
       }
     });
 
@@ -2780,34 +2935,6 @@ var C3D = (function(){
     }));
     groupRoot.add(flowPts);
 
-    /* ---------- emission rising off the clusters ---------- */
-    var nRise = small ? 700 : 1600;
-    var rPos = new Float32Array(nRise * 3), rCol = new Float32Array(nRise * 3);
-    riseData = new Array(nRise);
-    var pool = [];
-    D.regions.forEach(function(r){
-      if (r._x == null) return;
-      for (var i = 0, c = Math.max(1, Math.round(r.v / 4)); i < c; i++) pool.push(r);
-    });
-    for (var m = 0; m < nRise; m++){
-      var r = pool[Math.floor(Math.random() * pool.length)];
-      riseData[m] = {
-        x:r._x + (Math.random() - .5) * r._spread * 1.6,
-        z:r._z + (Math.random() - .5) * r._spread * 1.6,
-        y:Math.random() * 70, s:1.1 + Math.random() * 2.6, top:52 + Math.random() * 34
-      };
-      var a = 0.20 + Math.random() * 0.4;
-      rCol[m * 3] = rCol[m * 3 + 1] = rCol[m * 3 + 2] = a;
-    }
-    var rg = new THREE.BufferGeometry();
-    rg.setAttribute('position', new THREE.BufferAttribute(rPos, 3));
-    rg.setAttribute('color', new THREE.BufferAttribute(rCol, 3));
-    risePts = new THREE.Points(rg, new THREE.PointsMaterial({
-      size:1.6, vertexColors:true, transparent:true, opacity:1,
-      blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:false
-    }));
-    groupRoot.add(risePts);
-
     /* ---------- struck geometry: coastline and one reticle ---------- */
     function outline(pts, op){
       var lp = pts.map(function(p){ return new THREE.Vector3(px(p[0]), 0.35, pz(p[1])); });
@@ -2856,8 +2983,8 @@ var C3D = (function(){
     var ghost = new THREE.MeshBasicMaterial({ transparent:true, opacity:0, depthWrite:false });
     D.regions.forEach(function(r){
       if (r._x == null) return;
-      var hit = new THREE.Mesh(new THREE.CylinderGeometry(r._spread, r._spread, r._h, 8, 1, true), ghost);
-      hit.position.set(r._x, r._h / 2, r._z);
+      var hit = new THREE.Mesh(new THREE.CylinderGeometry(r._spread, r._spread, 3, 12, 1, false), ghost);
+      hit.position.set(r._x, 1.5, r._z);
       hit.userData = r;
       groupRoot.add(hit); hoverTargets.push(hit);
     });
@@ -2889,7 +3016,7 @@ var C3D = (function(){
       view.r * Math.cos(view.phi),
       view.r * Math.sin(view.phi) * Math.cos(view.theta)
     );
-    camera.lookAt(0, 10, 0);
+    camera.lookAt(0, 4, 0);
   }
 
   function buildLabels(){
@@ -2963,7 +3090,7 @@ var C3D = (function(){
       var fr = u.a, to = u.b;
       showTip(e, (LANG === 'ko' ? fr.ko + ' → ' + to.ko : fr.en + ' → ' + to.en), [
         { k:L({ ko:'순 이동 전력', en:'Net power moved' }), v:fmt(u.flow.v, 0) + ' TWh/' + L({ ko:'년', en:'yr' }), c:'#ffffff' },
-        { k:L({ ko:'내재 탄소', en:'Embodied carbon' }), v:fmt(u.flow.v * GRID_EF, 2) + ' Mt/' + L({ ko:'년', en:'yr' }), c:'#ffffff' }
+        { k:L({ ko:'내재 탄소', en:'Embodied carbon' }), v:fmt(u.flow.v * gridEF(), 2) + ' Mt/' + L({ ko:'년', en:'yr' }), c:'#ffffff' }
       ]);
     } else if (u && u.k){
       showTip(e, LANG === 'ko' ? u.ko : u.en, [
@@ -2981,7 +3108,7 @@ var C3D = (function(){
     $('#c3dClock').textContent = (d > 0 ? d + (LANG === 'ko' ? '일 ' : 'd ') : '') +
       pad(hh) + ':' + pad(mm) + ':' + pad(ss);
     $('#c3dPower').textContent = bigNum(s * MWH_PER_SEC, ['MWh','GWh','TWh'], 1000);
-    $('#c3dCarbon').textContent = bigNum(s * CARBON_PER_SEC, ['t','kt','Mt'], 1000);
+    $('#c3dCarbon').textContent = bigNum(carbonAcc, ['t','kt','Mt'], 1000);
     $('#c3dNational').textContent = bigNum(s * NATIONAL_PER_SEC, ['t','kt','Mt'], 1000);
   }
 
@@ -2996,7 +3123,7 @@ var C3D = (function(){
     var placed = [];
     labelOrder.forEach(function(o){
       if (o.ret) v3.set(reticle.x, 0.5, reticle.z + reticle.r);
-      else v3.set(o.r._x, o.r._h + 6, o.r._z);
+      else v3.set(o.r._x, 4, o.r._z - o.r._spread * 0.6);
       v3.project(camera);
       if (v3.z >= 1){ o.el.style.opacity = '0'; return; }
       var x = (v3.x * .5 + .5) * b.clientWidth;
@@ -3024,6 +3151,8 @@ var C3D = (function(){
 
     if (st.playing){
       st.elapsed += dt * st.speed;
+      /* integrate so a change in live grid intensity only affects time after it */
+      carbonAcc += dt * st.speed * MWH_PER_SEC * gridEF();
       if (st.auto && !REDUCED) view.tTheta += dt * 0.032;
       var boost = st.speed > 1 ? (st.speed > 60 ? 2.4 : 1.7) : 1;
       if (!REDUCED || !movedOnce){
@@ -3036,14 +3165,6 @@ var C3D = (function(){
           pos.setXYZ(i, p.x + f.j, p.y, p.z + f.j);
         }
         pos.needsUpdate = true;
-        /* emission drifts up off the clusters */
-        var rp = risePts.geometry.attributes.position;
-        for (var m = 0; m < riseData.length; m++){
-          var o = riseData[m];
-          if (!REDUCED){ o.y += dt * o.s * boost; if (o.y > o.top) o.y = 0; }
-          rp.setXYZ(m, o.x, o.y, o.z);
-        }
-        rp.needsUpdate = true;
         movedOnce = true;
       }
       updateHUD();
@@ -3141,7 +3262,7 @@ var C3D = (function(){
    synthetic. No real allowances are created, held or traded.
    ========================================================================== */
 var DIFFICULTY = '00';
-var STORE_KEY = 'sg.market.v1';
+var STORE_KEY = 'sg.market.v2';
 
 var SECTORS = [
   { v:'power',   ko:'전력·에너지',   en:'Power & energy' },
@@ -3162,9 +3283,9 @@ var METHODS = [
 ];
 
 var S = {
-  company:null, chain:[], cash:500000000,
+  company:null, chain:[], cash:1500000000,
   hold:{ KAU:0, CRD:0 }, obligation:0, allocated:0,
-  price:8900, hist:[], fills:[], book:{ bids:[], asks:[] }
+  price:26000, hist:[], fills:[], book:{ bids:[], asks:[] }
 };
 
 function saveState(){
@@ -3185,7 +3306,7 @@ function loadState(){
     S.company = o.company; S.chain = o.chain; S.cash = o.cash;
     S.hold = o.hold || { KAU:0, CRD:0 };
     S.obligation = o.obligation || 0; S.allocated = o.allocated || 0;
-    S.price = o.price || 8900; S.hist = o.hist || []; S.fills = o.fills || [];
+    S.price = o.price || 26000; S.hist = o.hist || []; S.fills = o.fills || [];
     return true;
   } catch (e) { return false; }
 }
@@ -3450,9 +3571,9 @@ function rnd(){ rndSeed = (rndSeed * 1103515245 + 12345) & 0x7fffffff; return rn
 
 function seedHistory(){
   if (S.hist.length) return;
-  var p = 8400;
+  var p = 24500;
   for (var i = 0; i < 60; i++){
-    p = Math.max(6200, Math.min(12800, p + (rnd() - 0.47) * 320));
+    p = Math.max(17000, Math.min(34000, p + (rnd() - 0.47) * 900));
     S.hist.push(Math.round(p));
   }
   S.price = S.hist[S.hist.length - 1];
@@ -3460,8 +3581,8 @@ function seedHistory(){
 function buildBook(){
   var mid = S.price, bids = [], asks = [];
   for (var i = 1; i <= 6; i++){
-    bids.push({ px:Math.round(mid - i * (30 + rnd() * 45)), qty:Math.round(120 + rnd() * 1500) });
-    asks.push({ px:Math.round(mid + i * (30 + rnd() * 45)), qty:Math.round(120 + rnd() * 1500) });
+    bids.push({ px:Math.round(mid - i * (90 + rnd() * 130)), qty:Math.round(120 + rnd() * 1500) });
+    asks.push({ px:Math.round(mid + i * (90 + rnd() * 130)), qty:Math.round(120 + rnd() * 1500) });
   }
   S.book = { bids:bids, asks:asks };
 }
@@ -3535,7 +3656,7 @@ function renderPrice(){
   f.svg.appendChild(sv('path', { d:line, fill:'none', stroke:css('--proof'), 'stroke-width':2 }));
   f.svg.appendChild(sv('circle', { cx:X(S.hist.length - 1), cy:Y(S.hist[S.hist.length - 1]), r:3.5, fill:css('--proof'), stroke:css('--ground'), 'stroke-width':2 }));
   var lbl = sv('text', { x:mL, y:f.h - 5, class:'lbl' });
-  lbl.textContent = L({ ko:'최근 60거래일 · 시뮬레이션 가격 (참고: 최근 KAU 실거래 8,000~12,000원/톤 범위)', en:'Last 60 sessions · simulated price (reference: recent KAU trades ₩8,000–12,000/t)' });
+  lbl.textContent = L({ ko:'최근 60거래일 · 시뮬레이션 가격 (참고: 2026년 KAU25 경매 낙찰가 6월 26,450원 · 7월 25,400원/톤)', en:'Last 60 sessions · simulated price (reference: 2026 KAU25 auctions cleared at ₩26,450 in June and ₩25,400/t in July)' });
   f.svg.appendChild(lbl);
 }
 function renderHoldings(){
@@ -3666,7 +3787,7 @@ $('#verifyChain') && $('#verifyChain').addEventListener('click', function(){
   });
 });
 $('#resetChain') && $('#resetChain').addEventListener('click', function(){
-  S.company = null; S.chain = []; S.cash = 500000000; S.hold = { KAU:0, CRD:0 };
+  S.company = null; S.chain = []; S.cash = 1500000000; S.hold = { KAU:0, CRD:0 };
   S.obligation = 0; S.allocated = 0; S.fills = [];
   try { localStorage.removeItem(STORE_KEY); } catch (e) {}
   $$('#mktSteps .step').forEach(function(s){ s.classList.remove('done'); });
@@ -3686,7 +3807,7 @@ setInterval(function(){
   if (!panel || panel.hidden || document.hidden) return;
   var view = $('#view-data');
   if (!view || view.hidden) return;
-  S.price = Math.max(6200, Math.min(12800, Math.round(S.price + (rnd() - 0.5) * 110)));
+  S.price = Math.max(17000, Math.min(34000, Math.round(S.price + (rnd() - 0.5) * 300)));
   S.hist.push(S.price); if (S.hist.length > 90) S.hist.shift();
   buildBook(); renderBook(); renderPrice(); renderTape(); renderHoldings(); saveState();
 }, 5000);
